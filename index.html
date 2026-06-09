@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fish1552</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #F7F6F2;
+      --surface: #FFFFFF;
+      --text: #1A1A18;
+      --muted: #6B6B67;
+      --border: #DDDDD8;
+      --accent: #C94B2C;
+      --tag-bg: #EEEEE9;
+      --font-mono: 'IBM Plex Mono', monospace;
+      --font-sans: 'IBM Plex Sans', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    .page {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 4rem 1.5rem 6rem;
+    }
+
+    /* Header */
+    .header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 2.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .handle {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+      margin-bottom: 0.5rem;
+    }
+
+    .name {
+      font-family: var(--font-mono);
+      font-size: 2.4rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.1;
+      margin-bottom: 1rem;
+    }
+
+    .bio {
+      font-size: 16px;
+      color: var(--muted);
+      max-width: 520px;
+      line-height: 1.7;
+    }
+
+    /* Avatar placeholder */
+    .avatar-row {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    /* Sections */
+    .section {
+      margin-bottom: 2.5rem;
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    /* Interests */
+    .interest-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .interest-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+
+    .interest-icon {
+      font-size: 1.25rem;
+      line-height: 1.7;
+      flex-shrink: 0;
+    }
+
+    .interest-title {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .interest-desc {
+      font-size: 14px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* Links */
+    .link-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .link-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text);
+      text-decoration: none;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--border);
+      transition: color 0.15s;
+    }
+
+    .link-item:last-child { border-bottom: none; }
+
+    .link-item:hover { color: var(--accent); }
+
+    .link-label {
+      color: var(--muted);
+      min-width: 90px;
+    }
+
+    /* Contact */
+    .contact-row {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .contact-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 6px 14px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text);
+      text-decoration: none;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .contact-pill:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 4rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 480px) {
+      .name { font-size: 1.8rem; }
+      .page { padding: 2.5rem 1.25rem 4rem; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+
+    <header class="header">
+      <div class="avatar-row">
+        <div class="avatar">F</div>
+        <div>
+          <p class="handle">// github.com/Fish1552</p>
+          <h1 class="name">Fish1552</h1>
+        </div>
+      </div>
+      <p class="bio">
+        Firefighter, horseman, and tinkerer. Based in Ludowici, Georgia.
+        I spend my time on the line, in the barn, and in the garage.
+      </p>
+    </header>
+
+    <section class="section" aria-label="Interests">
+      <p class="section-label">What I'm into</p>
+      <div class="interest-list">
+
+        <div class="interest-item">
+          <span class="interest-icon" aria-hidden="true">🔥</span>
+          <div>
+            <p class="interest-title">Fire service</p>
+            <p class="interest-desc">Career firefighter. Incident command, NFIRS, and the whole nine yards.</p>
+          </div>
+        </div>
+
+        <div class="interest-item">
+          <span class="interest-icon" aria-hidden="true">🐴</span>
+          <div>
+            <p class="interest-title">Sticky Limb Stables</p>
+            <p class="interest-desc">Horse riding stable in Ludowici, GA. Come out and ride.</p>
+          </div>
+        </div>
+
+        <div class="interest-item">
+          <span class="interest-icon" aria-hidden="true">🔧</span>
+          <div>
+            <p class="interest-title">DIY & building things</p>
+            <p class="interest-desc">If I can build it myself, I will. Projects big and small.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="section" aria-label="Links">
+      <p class="section-label">Links</p>
+      <div class="link-list">
+        <a class="link-item" href="https://stickylimbstables.com" target="_blank" rel="noopener">
+          <span class="link-label">Stables →</span>
+          stickylimbstables.com
+        </a>
+        <a class="link-item" href="https://github.com/Fish1552" target="_blank" rel="noopener">
+          <span class="link-label">GitHub →</span>
+          github.com/Fish1552
+        </a>
+      </div>
+    </section>
+
+    <section class="section" aria-label="Contact">
+      <p class="section-label">Get in touch</p>
+      <div class="contact-row">
+        <a class="contact-pill" href="mailto:you@email.com">
+          ✉ email
+        </a>
+        <a class="contact-pill" href="https://github.com/Fish1552" target="_blank" rel="noopener">
+          ⌥ github
+        </a>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p>Fish1552 &mdash; Ludowici, GA &mdash; built with plain HTML</p>
+    </footer>
+
+  </main>
+</body>
+</html>
