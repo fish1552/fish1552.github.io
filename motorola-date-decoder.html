@@ -173,13 +173,13 @@
         <input type="text" id="b-code" class="code-field" maxlength="4" placeholder="2425" autocomplete="off" oninput="onBatteryInput()" />
       </div>
       <div>
-        <label for="b-notes">Notes <span style="font-weight:400;text-transform:none;letter-spacing:0;">(serial #, model…)</span></label>
+        <label for="b-notes">Serial Number</label>
         <input type="text" id="b-notes" placeholder="e.g. SN#12345" autocomplete="off" oninput="onBatteryNotes()" />
       </div>
     </div>
     <div class="result-area" id="b-result">
       <div class="result-grid">
-        <div class="result-cell"><div class="cell-label">Date range</div><div class="cell-value" id="b-r-range">—</div></div>
+        <div class="result-cell"><div class="cell-label">Week start date</div><div class="cell-value" id="b-r-range">—</div></div>
         <div class="result-cell"><div class="cell-label">Age</div><div class="cell-value" id="b-r-age">—</div></div>
       </div>
       <div class="alert alert-warning" id="b-old">
@@ -204,15 +204,15 @@
   <!-- ── RADIO ── -->
   <div class="card">
     <div class="section-label radio">Radio</div>
-    <p style="font-size:0.78rem;color:#888;margin-bottom:12px;">Enter the full serial number — year &amp; month are decoded from positions 5 &amp; 6</p>
+    <p style="font-size:0.78rem;color:#888;margin-bottom:12px;">Enter the full serial number — year &amp; month are decoded automatically from positions 5 &amp; 6</p>
     <div class="field-row">
       <div>
-        <label for="r-serial">Serial number</label>
+        <label for="r-serial">Serial Number</label>
         <input type="text" id="r-serial" class="radio-code-field" placeholder="e.g. 123ABxxxx" autocomplete="off" oninput="onRadioInput()" />
       </div>
       <div>
-        <label for="r-notes">Notes <span style="font-weight:400;text-transform:none;letter-spacing:0;">(model, location…)</span></label>
-        <input type="text" id="r-notes" placeholder="e.g. APX6000 Unit 4" autocomplete="off" oninput="onRadioNotes()" />
+        <label for="r-date-display">Date <span style="font-weight:400;text-transform:none;letter-spacing:0;">(auto-decoded)</span></label>
+        <input type="text" id="r-date-display" placeholder="—" readonly style="background:#f7f8fa;color:#555;cursor:default;border-color:#e2e5ea;" />
       </div>
     </div>
     <div class="result-area" id="r-result">
@@ -253,7 +253,7 @@
         <input type="text" id="m-code" class="code-field" maxlength="4" placeholder="0124" autocomplete="off" oninput="onMicInput()" />
       </div>
       <div>
-        <label for="m-notes">Notes <span style="font-weight:400;text-transform:none;letter-spacing:0;">(serial #, model…)</span></label>
+        <label for="m-notes">Serial Number</label>
         <input type="text" id="m-notes" placeholder="e.g. SN#98765" autocomplete="off" oninput="onMicNotes()" />
       </div>
     </div>
@@ -302,9 +302,9 @@
           <tr>
             <th style="width:72px;">Type</th>
             <th style="width:100px;">Code / Serial</th>
-            <th style="width:130px;">Date</th>
+            <th style="width:130px;">Date / Week start</th>
             <th style="width:80px;">Age</th>
-            <th>Notes</th>
+            <th>Serial Number</th>
             <th style="width:28px;"></th>
           </tr>
         </thead>
@@ -317,7 +317,7 @@
     </div>
   </div>
 
-  <p class="hint">Duplicate check is based on the Notes / serial number field across all equipment types.</p>
+  <p class="hint">Duplicate check is based on the Serial Number field across all equipment types.</p>
 </div>
 
 <script>
@@ -368,10 +368,9 @@
     var toMon = dow === 0 ? 1 : dow === 1 ? 0 : 8 - dow;
     var mon1 = new Date(yr, 0, 1 + toMon);
     var wStart = new Date(mon1); wStart.setDate(mon1.getDate() + (ww - 1) * 7);
-    var wEnd   = new Date(wStart); wEnd.setDate(wStart.getDate() + 6);
     var f = function(d) { return d.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}); };
     var a = calcAge(yr, wStart.getMonth());
-    return { code: raw, range: f(wStart) + ' – ' + f(wEnd), age: a.age, old: a.old };
+    return { code: raw, range: f(wStart), age: a.age, old: a.old };
   }
 
   function onBatteryInput() {
@@ -438,8 +437,10 @@
 
   function onRadioInput() {
     var raw = document.getElementById('r-serial').value.trim();
+    var dateField = document.getElementById('r-date-display');
     show('r-err', false); show('r-result', false); show('r-old', false); show('r-dup', false);
     curRadio = null;
+    dateField.value = '';
     if (raw.length < 6) return;
     var r = decodeRadio(raw);
     if (!r) {
@@ -448,21 +449,20 @@
     }
     if (r.error) {
       document.getElementById('r-err-text').textContent = r.error;
+      dateField.value = 'Invalid code';
       show('r-err', true); return;
     }
     curRadio = r;
+    dateField.value = r.date;
     document.getElementById('r-r-date').textContent  = r.date;
     document.getElementById('r-r-age').textContent   = r.age;
     document.getElementById('r-r-chars').textContent = r.chars;
     show('r-result', true);
     show('r-old', r.old);
-    setDupState('r-add', 'r-dup', document.getElementById('r-notes').value);
+    setDupState('r-add', 'r-dup', document.getElementById('r-serial').value.trim());
   }
 
-  function onRadioNotes() {
-    if (!curRadio) return;
-    setDupState('r-add', 'r-dup', document.getElementById('r-notes').value);
-  }
+  function onRadioNotes() { /* serial number field is used directly */ }
 
   // ── Hand Microphone ──
   function decodeMic(raw) {
@@ -514,7 +514,7 @@
     } else if (type === 'radio') {
       cur = curRadio; codeVal = cur ? document.getElementById('r-serial').value.trim().toUpperCase() : '';
       dateVal = cur ? cur.date : ''; ageVal = cur ? cur.age : ''; oldVal = cur ? cur.old : false;
-      notesId='r-notes'; codeId='r-serial'; resultId='r-result'; oldId='r-old'; dupId='r-dup'; errId='r-err';
+      notesId='r-serial'; codeId='r-serial'; resultId='r-result'; oldId='r-old'; dupId='r-dup'; errId='r-err';
     } else {
       cur = curMic; codeVal = cur ? cur.code : ''; dateVal = cur ? cur.date : '';
       ageVal = cur ? cur.age : ''; oldVal = cur ? cur.old : false;
@@ -566,7 +566,7 @@
   }
 
   function copyCSV() {
-    var rows = ['Type,Code / Serial,Date,Age,Notes,Logged On'];
+    var rows = ['Type,Code / Serial,Date,Age,Serial Number,Logged On'];
     log.forEach(function(e) {
       var typeLabel = e.type === 'battery' ? 'Battery/Charger' : e.type === 'radio' ? 'Radio' : 'Hand Mic';
       var n = (e.notes || '').replace(/"/g, '""');
