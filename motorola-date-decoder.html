@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Motorola Date Code Decoder</title>
   <style>
-    /* ── Reset & base ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
@@ -16,252 +15,144 @@
       padding: 2rem 1rem 4rem;
     }
 
-    /* ── Layout ── */
-    .page {
-      max-width: 620px;
-      margin: 0 auto;
-    }
+    .page { max-width: 660px; margin: 0 auto; }
 
-    /* ── Header ── */
-    header {
-      margin-bottom: 1.75rem;
-    }
-    .logo-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 6px;
-    }
+    /* Header */
+    header { margin-bottom: 1.75rem; }
+    .logo-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
     .logo-icon {
-      width: 36px;
-      height: 36px;
-      background: #0062cc;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width: 36px; height: 36px; background: #0062cc;
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
     }
     .logo-icon svg { display: block; }
-    h1 {
-      font-size: 1.25rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      color: #0a0a0a;
-    }
-    .subtitle {
-      font-size: 0.8rem;
-      color: #666;
-      margin-left: 46px;
-    }
+    h1 { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; color: #0a0a0a; }
+    .subtitle { font-size: 0.8rem; color: #666; margin-left: 46px; }
 
-    /* ── Card ── */
+    /* Section labels */
+    .section-label {
+      font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.1em; color: #fff; background: #0062cc;
+      border-radius: 5px; padding: 3px 9px; display: inline-block; margin-bottom: 8px;
+    }
+    .section-label.radio  { background: #6c3fc5; }
+    .section-label.mic    { background: #1a7f5a; }
+
+    /* Cards */
     .card {
-      background: #fff;
-      border-radius: 12px;
-      border: 1px solid #e2e5ea;
-      padding: 1.5rem;
-      margin-bottom: 1rem;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+      background: #fff; border-radius: 12px; border: 1px solid #e2e5ea;
+      padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.05);
     }
 
-    /* ── Form ── */
+    /* Form rows */
     .field-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 12px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;
     }
-    @media (max-width: 420px) {
-      .field-row { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 440px) { .field-row { grid-template-columns: 1fr; } }
+
     label {
-      display: block;
-      font-size: 0.72rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      color: #555;
-      margin-bottom: 5px;
+      display: block; font-size: 0.72rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.07em; color: #555; margin-bottom: 5px;
     }
     input[type="text"] {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1.5px solid #d0d5dd;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      color: #1a1a1a;
-      background: #fff;
-      transition: border-color 0.15s;
-      outline: none;
+      width: 100%; padding: 10px 12px; border: 1.5px solid #d0d5dd;
+      border-radius: 8px; font-size: 0.95rem; color: #1a1a1a;
+      background: #fff; transition: border-color 0.15s; outline: none;
     }
     input[type="text"]:focus { border-color: #0062cc; }
-    #code-input {
-      font-size: 1.5rem;
-      font-family: 'Courier New', Courier, monospace;
-      letter-spacing: 8px;
-      text-align: center;
+    .code-field {
+      font-size: 1.4rem; font-family: 'Courier New', Courier, monospace;
+      letter-spacing: 6px; text-align: center;
+    }
+    .radio-code-field {
+      font-size: 1rem; font-family: 'Courier New', Courier, monospace;
+      letter-spacing: 3px; text-align: center; text-transform: uppercase;
     }
 
-    /* ── Result ── */
-    #result-area { display: none; margin-top: 14px; }
-    .result-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-    .result-cell {
-      background: #f7f8fa;
-      border-radius: 8px;
-      padding: 10px 14px;
-    }
+    /* Result cells */
+    .result-area { display: none; margin-top: 14px; }
+    .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    .result-cell { background: #f7f8fa; border-radius: 8px; padding: 10px 14px; }
     .result-cell .cell-label {
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      color: #888;
-      margin-bottom: 3px;
+      font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.07em; color: #888; margin-bottom: 3px;
     }
-    .result-cell .cell-value {
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: #1a1a1a;
-    }
+    .result-cell .cell-value { font-size: 0.9rem; font-weight: 600; color: #1a1a1a; }
 
-    /* ── Alerts ── */
+    /* Alerts */
     .alert {
-      border-radius: 8px;
-      padding: 10px 14px;
-      font-size: 0.82rem;
-      display: none;
-      margin-bottom: 10px;
+      border-radius: 8px; padding: 10px 14px; font-size: 0.82rem;
+      display: none; margin-bottom: 10px;
     }
     .alert-warning { background: #fff8e1; color: #7a5c00; border: 1px solid #ffe082; }
     .alert-danger  { background: #fff0f0; color: #c0392b; border: 1px solid #f5c6c6; }
     .alert-success { background: #edfaf1; color: #1a6e3c; border: 1px solid #a3d9b1; }
     .alert svg { vertical-align: -3px; margin-right: 5px; }
 
-    /* ── Button ── */
+    /* Buttons */
     .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      padding: 10px 18px;
-      border-radius: 8px;
-      font-size: 0.88rem;
-      font-weight: 600;
-      cursor: pointer;
-      border: none;
-      transition: background 0.15s, opacity 0.15s;
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 6px; padding: 10px 18px; border-radius: 8px; font-size: 0.88rem;
+      font-weight: 600; cursor: pointer; border: none; transition: background 0.15s, opacity 0.15s;
     }
-    .btn-primary {
-      background: #0062cc;
-      color: #fff;
-      width: 100%;
-    }
+    .btn-primary { background: #0062cc; color: #fff; width: 100%; }
     .btn-primary:hover:not(:disabled) { background: #0052aa; }
+    .btn-primary.radio-btn { background: #6c3fc5; }
+    .btn-primary.radio-btn:hover:not(:disabled) { background: #5a32a8; }
+    .btn-primary.mic-btn { background: #1a7f5a; }
+    .btn-primary.mic-btn:hover:not(:disabled) { background: #156648; }
     .btn-primary:disabled { opacity: 0.38; cursor: not-allowed; }
-    .btn-sm {
-      padding: 6px 13px;
-      font-size: 0.8rem;
-    }
-    .btn-outline {
-      background: #fff;
-      color: #0062cc;
-      border: 1.5px solid #0062cc;
-    }
+    .btn-sm { padding: 6px 13px; font-size: 0.8rem; }
+    .btn-outline { background: #fff; color: #0062cc; border: 1.5px solid #0062cc; }
     .btn-outline:hover { background: #f0f6ff; }
-    .btn-ghost {
-      background: transparent;
-      color: #c0392b;
-      border: 1.5px solid #e0e0e0;
-    }
+    .btn-ghost { background: transparent; color: #c0392b; border: 1.5px solid #e0e0e0; }
     .btn-ghost:hover { background: #fff0f0; border-color: #f5c6c6; }
-
-    /* ── Log ── */
-    .log-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 14px;
-    }
-    .log-title {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: #0a0a0a;
-    }
-    .log-count {
-      font-size: 0.78rem;
-      color: #888;
-      font-weight: 400;
-      margin-left: 6px;
-    }
     .btn-row { display: flex; gap: 8px; }
 
+    /* Log */
+    .log-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .log-title { font-size: 0.95rem; font-weight: 700; color: #0a0a0a; }
+    .log-count { font-size: 0.78rem; color: #888; font-weight: 400; margin-left: 6px; }
+
     .table-wrap { overflow-x: auto; }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.8rem;
-      table-layout: fixed;
-    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
     th {
-      text-align: left;
-      padding: 6px 8px;
-      font-size: 0.68rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: #888;
-      border-bottom: 1.5px solid #e2e5ea;
+      text-align: left; padding: 6px 8px; font-size: 0.68rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em; color: #888;
+      border-bottom: 1.5px solid #e2e5ea; white-space: nowrap;
     }
-    td {
-      padding: 8px 8px;
-      border-bottom: 1px solid #f0f2f5;
-      vertical-align: middle;
-    }
+    td { padding: 8px 8px; border-bottom: 1px solid #f0f2f5; vertical-align: middle; }
     tr:last-child td { border-bottom: none; }
-    .col-code  { width: 62px; }
-    .col-range { width: 150px; }
-    .col-age   { width: 90px; }
-    .col-notes { }
-    .col-del   { width: 32px; }
 
     .mono { font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; font-weight: 700; }
     .age-old { color: #b45309; font-weight: 600; }
     .notes-cell { color: #555; word-break: break-all; }
+    .type-badge {
+      font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+      border-radius: 4px; padding: 2px 6px; color: #fff; white-space: nowrap;
+    }
+    .type-battery { background: #0062cc; }
+    .type-radio   { background: #6c3fc5; }
+    .type-mic     { background: #1a7f5a; }
 
     .del-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: #bbb;
-      padding: 2px 4px;
-      border-radius: 4px;
-      line-height: 1;
-      transition: color 0.12s;
+      background: none; border: none; cursor: pointer; color: #bbb;
+      padding: 2px 4px; border-radius: 4px; line-height: 1; transition: color 0.12s;
     }
     .del-btn:hover { color: #c0392b; }
 
-    /* ── Footer hint ── */
-    .hint {
-      font-size: 0.72rem;
-      color: #aaa;
-      text-align: center;
-      margin-top: 0.75rem;
-    }
+    .hint { font-size: 0.72rem; color: #aaa; text-align: center; margin-top: 0.75rem; }
+
+    /* SVG icon helpers */
+    .ic { display:inline-block; vertical-align:-3px; margin-right:5px; }
   </style>
 </head>
 <body>
 <div class="page">
 
-  <!-- Header -->
   <header>
     <div class="logo-row">
       <div class="logo-icon">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
           <rect x="2" y="5" width="16" height="11" rx="2" stroke="white" stroke-width="1.6"/>
           <path d="M6 5V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1" stroke="white" stroke-width="1.6"/>
           <line x1="7" y1="10" x2="13" y2="10" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
@@ -269,57 +160,128 @@
       </div>
       <h1>Motorola Date Code Decoder</h1>
     </div>
-    <p class="subtitle">Batteries &amp; chargers &nbsp;·&nbsp; YYWW format</p>
+    <p class="subtitle">Batteries &amp; chargers &nbsp;·&nbsp; Radios &nbsp;·&nbsp; Hand microphones</p>
   </header>
 
-  <!-- Decoder card -->
+  <!-- ── BATTERY / CHARGER ── -->
   <div class="card">
+    <div class="section-label">Battery / Charger</div>
+    <p style="font-size:0.78rem;color:#888;margin-bottom:12px;">4-digit code in YYWW format (e.g. 2425 = year 2024, week 25)</p>
     <div class="field-row">
       <div>
-        <label for="code-input">Date code</label>
-        <input type="text" id="code-input" maxlength="4" placeholder="2425" autocomplete="off" oninput="onCodeInput()" />
+        <label for="b-code">Date code</label>
+        <input type="text" id="b-code" class="code-field" maxlength="4" placeholder="2425" autocomplete="off" oninput="onBatteryInput()" />
       </div>
       <div>
-        <label for="notes-input">Notes <span style="font-weight:400;text-transform:none;letter-spacing:0;">(serial #, model…)</span></label>
-        <input type="text" id="notes-input" placeholder="e.g. APX6000 SN#12345" autocomplete="off" oninput="onNotesInput()" />
+        <label for="b-notes">Notes <span style="font-weight:400;text-transform:none;letter-spacing:0;">(serial #, model…)</span></label>
+        <input type="text" id="b-notes" placeholder="e.g. SN#12345" autocomplete="off" oninput="onBatteryNotes()" />
       </div>
     </div>
-
-    <div id="result-area">
+    <div class="result-area" id="b-result">
       <div class="result-grid">
-        <div class="result-cell">
-          <div class="cell-label">Date range</div>
-          <div class="cell-value" id="r-range">—</div>
-        </div>
-        <div class="result-cell">
-          <div class="cell-label">Age</div>
-          <div class="cell-value" id="r-age">—</div>
-        </div>
+        <div class="result-cell"><div class="cell-label">Date range</div><div class="cell-value" id="b-r-range">—</div></div>
+        <div class="result-cell"><div class="cell-label">Age</div><div class="cell-value" id="b-r-age">—</div></div>
       </div>
-
-      <div class="alert alert-warning" id="alert-old">
-        <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M10 2l8.66 15H1.34L10 2z" stroke="#7a5c00" stroke-width="1.6" stroke-linejoin="round"/><line x1="10" y1="8" x2="10" y2="12" stroke="#7a5c00" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="14.5" r="0.8" fill="#7a5c00"/></svg>
+      <div class="alert alert-warning" id="b-old">
+        <svg class="ic" width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M10 2l8.66 15H1.34L10 2z" stroke="#7a5c00" stroke-width="1.6" stroke-linejoin="round"/><line x1="10" y1="8" x2="10" y2="12" stroke="#7a5c00" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="14.5" r="0.8" fill="#7a5c00"/></svg>
         Over 3 years old — consider replacing this battery or charger.
       </div>
-
-      <div class="alert alert-danger" id="alert-dup">
-        <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#c0392b" stroke-width="1.6"/><line x1="7" y1="7" x2="13" y2="13" stroke="#c0392b" stroke-width="1.6" stroke-linecap="round"/><line x1="13" y1="7" x2="7" y2="13" stroke="#c0392b" stroke-width="1.6" stroke-linecap="round"/></svg>
-        This code + notes combination is already in the log.
+      <div class="alert alert-danger" id="b-dup">
+        <svg class="ic" width="15" height="15" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#c0392b" stroke-width="1.6"/><line x1="7" y1="7" x2="13" y2="13" stroke="#c0392b" stroke-width="1.6" stroke-linecap="round"/><line x1="13" y1="7" x2="7" y2="13" stroke="#c0392b" stroke-width="1.6" stroke-linecap="round"/></svg>
+        This serial number is already in the log.
       </div>
-
-      <button class="btn btn-primary" id="add-btn" onclick="addToLog()">
+      <button class="btn btn-primary" id="b-add" onclick="addEntry('battery')">
         <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><line x1="10" y1="4" x2="10" y2="16" stroke="white" stroke-width="2" stroke-linecap="round"/><line x1="4" y1="10" x2="16" y2="10" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
         Add to log
       </button>
     </div>
-
-    <div class="alert alert-danger" id="alert-err" style="margin-top:10px;">
-      <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#c0392b" stroke-width="1.6"/><line x1="10" y1="6" x2="10" y2="11" stroke="#c0392b" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="13.5" r="0.8" fill="#c0392b"/></svg>
-      <span id="err-text"></span>
+    <div class="alert alert-danger" id="b-err" style="margin-top:10px;">
+      <svg class="ic" width="15" height="15" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#c0392b" stroke-width="1.6"/><line x1="10" y1="6" x2="10" y2="11" stroke="#c0392b" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="13.5" r="0.8" fill="#c0392b"/></svg>
+      <span id="b-err-text"></span>
     </div>
   </div>
 
-  <!-- Log card -->
+  <!-- ── RADIO ── -->
+  <div class="card">
+    <div class="section-label radio">Radio</div>
+    <p style="font-size:0.78rem;color:#888;margin-bottom:12px;">Enter the full serial number — year &amp; month are decoded from positions 5 &amp; 6</p>
+    <div class="field-row">
+      <div>
+        <label for="r-serial">Serial number</label>
+        <input type="text" id="r-serial" class="radio-code-field" placeholder="e.g. 123ABxxxx" autocomplete="off" oninput="onRadioInput()" />
+      </div>
+      <div>
+        <label for="r-notes">Notes <span style="font-weight:400;text-transform:none;letter-spacing:0;">(model, location…)</span></label>
+        <input type="text" id="r-notes" placeholder="e.g. APX6000 Unit 4" autocomplete="off" oninput="onRadioNotes()" />
+      </div>
+    </div>
+    <div class="result-area" id="r-result">
+      <div class="result-grid">
+        <div class="result-cell"><div class="cell-label">Manufacture date</div><div class="cell-value" id="r-r-date">—</div></div>
+        <div class="result-cell"><div class="cell-label">Age</div><div class="cell-value" id="r-r-age">—</div></div>
+      </div>
+      <div class="result-cell" style="margin-bottom:10px;">
+        <div class="cell-label">Decoded from</div>
+        <div class="cell-value" id="r-r-chars" style="font-family:'Courier New',monospace;">—</div>
+      </div>
+      <div class="alert alert-warning" id="r-old">
+        <svg class="ic" width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M10 2l8.66 15H1.34L10 2z" stroke="#7a5c00" stroke-width="1.6" stroke-linejoin="round"/><line x1="10" y1="8" x2="10" y2="12" stroke="#7a5c00" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="14.5" r="0.8" fill="#7a5c00"/></svg>
+        Over 3 years old — consider scheduling maintenance or replacement.
+      </div>
+      <div class="alert alert-danger" id="r-dup">
+        <svg class="ic" width="15" height="15" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#c0392b" stroke-width="1.6"/><line x1="7" y1="7" x2="13" y2="13" stroke="#c0392b" stroke-width="1.6" stroke-linecap="round"/><line x1="13" y1="7" x2="7" y2="13" stroke="#c0392b" stroke-width="1.6" stroke-linecap="round"/></svg>
+        This serial number is already in the log.
+      </div>
+      <button class="btn btn-primary radio-btn" id="r-add" onclick="addEntry('radio')">
+        <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><line x1="10" y1="4" x2="10" y2="16" stroke="white" stroke-width="2" stroke-linecap="round"/><line x1="4" y1="10" x2="16" y2="10" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+        Add to log
+      </button>
+    </div>
+    <div class="alert alert-danger" id="r-err" style="margin-top:10px;">
+      <svg class="ic" width="15" height="15" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#c0392b" stroke-width="1.6"/><line x1="10" y1="6" x2="10" y2="11" stroke="#c0392b" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="13.5" r="0.8" fill="#c0392b"/></svg>
+      <span id="r-err-text"></span>
+    </div>
+  </div>
+
+  <!-- ── HAND MICROPHONE ── -->
+  <div class="card">
+    <div class="section-label mic">Hand Microphone</div>
+    <p style="font-size:0.78rem;color:#888;margin-bottom:12px;">4-digit code in MMYY format (e.g. 0124 = January 2024)</p>
+    <div class="field-row">
+      <div>
+        <label for="m-code">Date code</label>
+        <input type="text" id="m-code" class="code-field" maxlength="4" placeholder="0124" autocomplete="off" oninput="onMicInput()" />
+      </div>
+      <div>
+        <label for="m-notes">Notes <span style="font-weight:400;text-transform:none;letter-spacing:0;">(serial #, model…)</span></label>
+        <input type="text" id="m-notes" placeholder="e.g. SN#98765" autocomplete="off" oninput="onMicNotes()" />
+      </div>
+    </div>
+    <div class="result-area" id="m-result">
+      <div class="result-grid">
+        <div class="result-cell"><div class="cell-label">Manufacture date</div><div class="cell-value" id="m-r-date">—</div></div>
+        <div class="result-cell"><div class="cell-label">Age</div><div class="cell-value" id="m-r-age">—</div></div>
+      </div>
+      <div class="alert alert-warning" id="m-old">
+        <svg class="ic" width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M10 2l8.66 15H1.34L10 2z" stroke="#7a5c00" stroke-width="1.6" stroke-linejoin="round"/><line x1="10" y1="8" x2="10" y2="12" stroke="#7a5c00" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="14.5" r="0.8" fill="#7a5c00"/></svg>
+        Over 3 years old — consider replacing this microphone.
+      </div>
+      <div class="alert alert-danger" id="m-dup">
+        <svg class="ic" width="15" height="15" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#c0392b" stroke-width="1.6"/><line x1="7" y1="7" x2="13" y2="13" stroke="#c0392b" stroke-width="1.6" stroke-linecap="round"/><line x1="13" y1="7" x2="7" y2="13" stroke="#c0392b" stroke-width="1.6" stroke-linecap="round"/></svg>
+        This serial number is already in the log.
+      </div>
+      <button class="btn btn-primary mic-btn" id="m-add" onclick="addEntry('mic')">
+        <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><line x1="10" y1="4" x2="10" y2="16" stroke="white" stroke-width="2" stroke-linecap="round"/><line x1="4" y1="10" x2="16" y2="10" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+        Add to log
+      </button>
+    </div>
+    <div class="alert alert-danger" id="m-err" style="margin-top:10px;">
+      <svg class="ic" width="15" height="15" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#c0392b" stroke-width="1.6"/><line x1="10" y1="6" x2="10" y2="11" stroke="#c0392b" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="13.5" r="0.8" fill="#c0392b"/></svg>
+      <span id="m-err-text"></span>
+    </div>
+  </div>
+
+  <!-- ── SHARED LOG ── -->
   <div class="card" id="log-card" style="display:none;">
     <div class="log-header">
       <span class="log-title">Log<span class="log-count" id="log-count"></span></span>
@@ -334,44 +296,68 @@
         </button>
       </div>
     </div>
-
     <div class="table-wrap">
       <table>
         <thead>
           <tr>
-            <th class="col-code">Code</th>
-            <th class="col-range">Date range</th>
-            <th class="col-age">Age</th>
-            <th class="col-notes">Notes</th>
-            <th class="col-del"></th>
+            <th style="width:72px;">Type</th>
+            <th style="width:100px;">Code / Serial</th>
+            <th style="width:130px;">Date</th>
+            <th style="width:80px;">Age</th>
+            <th>Notes</th>
+            <th style="width:28px;"></th>
           </tr>
         </thead>
         <tbody id="log-body"></tbody>
       </table>
     </div>
-
-    <div class="alert alert-success" id="alert-copied" style="margin-top:12px;">
-      <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><polyline points="4 10 8 14 16 6" stroke="#1a6e3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div class="alert alert-success" id="alert-copied" style="margin-top:12px;display:none;">
+      <svg class="ic" width="15" height="15" viewBox="0 0 20 20" fill="none"><polyline points="4 10 8 14 16 6" stroke="#1a6e3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       CSV copied — paste into Excel or Google Sheets.
     </div>
   </div>
 
-  <p class="hint">Format: YYWW &nbsp;·&nbsp; e.g. 2425 = year 2024, week 25 &nbsp;·&nbsp; Dates are approximate ± a few days</p>
+  <p class="hint">Duplicate check is based on the Notes / serial number field across all equipment types.</p>
 </div>
 
 <script>
+  // ── Shared log ──
   var log = [];
-  var current = null;
+  var curBattery = null, curRadio = null, curMic = null;
 
-  function dupKey(code, notes) {
-    return code + '|' + (notes || '').trim().toLowerCase();
+  function isDup(notes) {
+    var n = (notes || '').trim().toLowerCase();
+    if (!n) return false;
+    return log.some(function(e) { return (e.notes || '').trim().toLowerCase() === n; });
   }
 
-  function isDup(code, notes) {
-    return log.some(function(e) { return dupKey(e.code, e.notes) === dupKey(code, notes); });
+  function calcAge(year, month) {
+    // month is 0-based
+    var mfgDate = new Date(year, month, 1);
+    var now = new Date();
+    var days = Math.floor((now - mfgDate) / 86400000);
+    var yrs = Math.floor(days / 365);
+    var mos = Math.floor((days % 365) / 30);
+    var age = yrs > 0 ? yrs + (yrs === 1 ? ' yr' : ' yrs') : '';
+    if (mos > 0) age += (age ? ', ' : '') + mos + ' mo';
+    if (!age) age = days + ' days';
+    return { age: age, old: yrs >= 3 };
   }
 
-  function decodeCode(raw) {
+  function show(id, visible) {
+    var el = document.getElementById(id);
+    if (el) el.style.display = visible ? 'block' : 'none';
+  }
+
+  function setDupState(addId, dupAlertId, notes) {
+    var dup = isDup(notes);
+    show(dupAlertId, dup);
+    var btn = document.getElementById(addId);
+    if (btn) { btn.disabled = dup; }
+  }
+
+  // ── Battery / Charger ──
+  function decodeBattery(raw) {
     if (!/^\d{4}$/.test(raw)) return null;
     var yy = parseInt(raw.slice(0, 2), 10);
     var ww = parseInt(raw.slice(2, 4), 10);
@@ -384,75 +370,176 @@
     var wStart = new Date(mon1); wStart.setDate(mon1.getDate() + (ww - 1) * 7);
     var wEnd   = new Date(wStart); wEnd.setDate(wStart.getDate() + 6);
     var f = function(d) { return d.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}); };
-    var now = new Date();
-    var days = Math.floor((now - wStart) / 86400000);
-    var yrs  = Math.floor(days / 365);
-    var mos  = Math.floor((days % 365) / 30);
-    var age  = yrs > 0 ? yrs + (yrs === 1 ? ' yr' : ' yrs') : '';
-    if (mos > 0) age += (age ? ', ' : '') + mos + ' mo';
-    if (!age) age = days + ' days';
-    return { code: raw, range: f(wStart) + ' – ' + f(wEnd), age: age, old: yrs >= 3 };
+    var a = calcAge(yr, wStart.getMonth());
+    return { code: raw, range: f(wStart) + ' – ' + f(wEnd), age: a.age, old: a.old };
   }
 
-  function show(id, visible) {
-    document.getElementById(id).style.display = visible ? 'block' : 'none';
-  }
-
-  function onCodeInput() {
-    var raw = document.getElementById('code-input').value.trim();
-    show('alert-err', false);
-    show('result-area', false);
-    show('alert-old', false);
-    show('alert-dup', false);
-    current = null;
+  function onBatteryInput() {
+    var raw = document.getElementById('b-code').value.trim();
+    show('b-err', false); show('b-result', false); show('b-old', false); show('b-dup', false);
+    curBattery = null;
     if (raw.length < 4) return;
     if (!/^\d{4}$/.test(raw)) {
-      document.getElementById('err-text').textContent = 'Enter exactly 4 digits.';
-      show('alert-err', true); return;
+      document.getElementById('b-err-text').textContent = 'Enter exactly 4 digits.';
+      show('b-err', true); return;
     }
-    var r = decodeCode(raw);
+    var r = decodeBattery(raw);
     if (!r) {
-      document.getElementById('err-text').textContent = 'Week must be between 01 and 53.';
-      show('alert-err', true); return;
+      document.getElementById('b-err-text').textContent = 'Week must be between 01 and 53.';
+      show('b-err', true); return;
     }
-    current = r;
-    document.getElementById('r-range').textContent = r.range;
-    document.getElementById('r-age').textContent   = r.age;
-    show('result-area', true);
-    show('alert-old', r.old);
-    refreshDupState();
+    curBattery = r;
+    document.getElementById('b-r-range').textContent = r.range;
+    document.getElementById('b-r-age').textContent   = r.age;
+    show('b-result', true);
+    show('b-old', r.old);
+    setDupState('b-add', 'b-dup', document.getElementById('b-notes').value);
   }
 
-  function onNotesInput() { refreshDupState(); }
-
-  function refreshDupState() {
-    if (!current) return;
-    var notes = document.getElementById('notes-input').value.trim();
-    var dup = isDup(current.code, notes);
-    show('alert-dup', dup);
-    var btn = document.getElementById('add-btn');
-    btn.disabled = dup;
+  function onBatteryNotes() {
+    if (!curBattery) return;
+    setDupState('b-add', 'b-dup', document.getElementById('b-notes').value);
   }
 
-  function addToLog() {
-    if (!current) return;
-    var notes = document.getElementById('notes-input').value.trim();
-    if (isDup(current.code, notes)) return;
-    log.push({ code: current.code, range: current.range, age: current.age, old: current.old, notes: notes, on: new Date().toLocaleDateString('en-US') });
+  // ── Radio ──
+  // Year map: letter → most recent year
+  var RADIO_YEAR = {
+    A:2000,B:2001,C:2002,D:2003,E:2004,F:2005,G:2006,H:2007,
+    J:2008,K:2009,L:2010,M:2011,N:2012,P:2013,Q:2014,R:2015,
+    S:2016,T:2017,U:2018,V:2019,W:2020,X:2021,Y:2022,Z:2023
+  };
+  // Month map: letter → 0-based month index
+  var RADIO_MONTH = {};
+  (function() {
+    var pairs = [['A','B'],['C','D'],['E','F'],['G','H'],['J','K'],
+                 ['L','M'],['N','P'],['Q','R'],['S','T'],['U','V'],
+                 ['W','X'],['Y','Z']];
+    pairs.forEach(function(p, i) { p.forEach(function(c) { RADIO_MONTH[c] = i; }); });
+  })();
+
+  function decodeRadio(serial) {
+    var s = serial.toUpperCase().replace(/\s/g, '');
+    if (s.length < 6) return null;
+    var yc = s[4]; // 5th character (0-indexed = 4)
+    var mc = s[5]; // 6th character
+    var yr = RADIO_YEAR[yc];
+    if (yr === undefined) return { error: 'Position 5 letter "' + yc + '" is not a valid year code.' };
+    var mo = RADIO_MONTH[mc];
+    if (mo === undefined) return { error: 'Position 6 letter "' + mc + '" is not a valid month code.' };
+    var monthNames = ['January','February','March','April','May','June',
+                      'July','August','September','October','November','December'];
+    var a = calcAge(yr, mo);
+    return {
+      serial: serial, date: monthNames[mo] + ' ' + yr,
+      chars: 'Pos 5: ' + yc + ' = ' + yr + '  |  Pos 6: ' + mc + ' = ' + monthNames[mo],
+      age: a.age, old: a.old
+    };
+  }
+
+  function onRadioInput() {
+    var raw = document.getElementById('r-serial').value.trim();
+    show('r-err', false); show('r-result', false); show('r-old', false); show('r-dup', false);
+    curRadio = null;
+    if (raw.length < 6) return;
+    var r = decodeRadio(raw);
+    if (!r) {
+      document.getElementById('r-err-text').textContent = 'Serial number must be at least 6 characters.';
+      show('r-err', true); return;
+    }
+    if (r.error) {
+      document.getElementById('r-err-text').textContent = r.error;
+      show('r-err', true); return;
+    }
+    curRadio = r;
+    document.getElementById('r-r-date').textContent  = r.date;
+    document.getElementById('r-r-age').textContent   = r.age;
+    document.getElementById('r-r-chars').textContent = r.chars;
+    show('r-result', true);
+    show('r-old', r.old);
+    setDupState('r-add', 'r-dup', document.getElementById('r-notes').value);
+  }
+
+  function onRadioNotes() {
+    if (!curRadio) return;
+    setDupState('r-add', 'r-dup', document.getElementById('r-notes').value);
+  }
+
+  // ── Hand Microphone ──
+  function decodeMic(raw) {
+    if (!/^\d{4}$/.test(raw)) return null;
+    var mm = parseInt(raw.slice(0, 2), 10);
+    var yy = parseInt(raw.slice(2, 4), 10);
+    if (mm < 1 || mm > 12) return null;
+    var yr = yy >= 90 ? 1900 + yy : 2000 + yy;
+    var monthNames = ['January','February','March','April','May','June',
+                      'July','August','September','October','November','December'];
+    var a = calcAge(yr, mm - 1);
+    return { code: raw, date: monthNames[mm - 1] + ' ' + yr, age: a.age, old: a.old };
+  }
+
+  function onMicInput() {
+    var raw = document.getElementById('m-code').value.trim();
+    show('m-err', false); show('m-result', false); show('m-old', false); show('m-dup', false);
+    curMic = null;
+    if (raw.length < 4) return;
+    if (!/^\d{4}$/.test(raw)) {
+      document.getElementById('m-err-text').textContent = 'Enter exactly 4 digits.';
+      show('m-err', true); return;
+    }
+    var r = decodeMic(raw);
+    if (!r) {
+      document.getElementById('m-err-text').textContent = 'Month must be between 01 and 12.';
+      show('m-err', true); return;
+    }
+    curMic = r;
+    document.getElementById('m-r-date').textContent = r.date;
+    document.getElementById('m-r-age').textContent  = r.age;
+    show('m-result', true);
+    show('m-old', r.old);
+    setDupState('m-add', 'm-dup', document.getElementById('m-notes').value);
+  }
+
+  function onMicNotes() {
+    if (!curMic) return;
+    setDupState('m-add', 'm-dup', document.getElementById('m-notes').value);
+  }
+
+  // ── Add to shared log ──
+  function addEntry(type) {
+    var cur, codeVal, dateVal, ageVal, oldVal, notesId, codeId, resultId, oldId, dupId, errId;
+    if (type === 'battery') {
+      cur = curBattery; codeVal = cur ? cur.code : ''; dateVal = cur ? cur.range : '';
+      ageVal = cur ? cur.age : ''; oldVal = cur ? cur.old : false;
+      notesId='b-notes'; codeId='b-code'; resultId='b-result'; oldId='b-old'; dupId='b-dup'; errId='b-err';
+    } else if (type === 'radio') {
+      cur = curRadio; codeVal = cur ? document.getElementById('r-serial').value.trim().toUpperCase() : '';
+      dateVal = cur ? cur.date : ''; ageVal = cur ? cur.age : ''; oldVal = cur ? cur.old : false;
+      notesId='r-notes'; codeId='r-serial'; resultId='r-result'; oldId='r-old'; dupId='r-dup'; errId='r-err';
+    } else {
+      cur = curMic; codeVal = cur ? cur.code : ''; dateVal = cur ? cur.date : '';
+      ageVal = cur ? cur.age : ''; oldVal = cur ? cur.old : false;
+      notesId='m-notes'; codeId='m-code'; resultId='m-result'; oldId='m-old'; dupId='m-dup'; errId='m-err';
+    }
+    if (!cur) return;
+    var notes = document.getElementById(notesId).value.trim();
+    if (isDup(notes)) return;
+    log.push({
+      type: type, code: codeVal, date: dateVal,
+      age: ageVal, old: oldVal, notes: notes,
+      on: new Date().toLocaleDateString('en-US')
+    });
     renderLog();
-    document.getElementById('code-input').value = '';
-    document.getElementById('notes-input').value = '';
-    show('result-area', false);
-    show('alert-old', false);
-    show('alert-dup', false);
-    show('alert-err', false);
-    current = null;
+    document.getElementById(codeId).value = '';
+    document.getElementById(notesId).value = '';
+    show(resultId, false); show(oldId, false); show(dupId, false); show(errId, false);
+    if (type === 'battery') curBattery = null;
+    else if (type === 'radio') curRadio = null;
+    else curMic = null;
   }
 
   function removeEntry(i) {
     log.splice(i, 1);
     renderLog();
-    if (current) refreshDupState();
   }
 
   function renderLog() {
@@ -462,13 +549,16 @@
     var tbody = document.getElementById('log-body');
     tbody.innerHTML = '';
     log.forEach(function(e, i) {
+      var badgeClass = e.type === 'battery' ? 'type-battery' : e.type === 'radio' ? 'type-radio' : 'type-mic';
+      var badgeLabel = e.type === 'battery' ? 'Battery' : e.type === 'radio' ? 'Radio' : 'Mic';
       var tr = document.createElement('tr');
       tr.innerHTML =
-        '<td class="mono col-code">' + e.code + '</td>' +
-        '<td class="col-range">' + e.range + '</td>' +
-        '<td class="col-age' + (e.old ? ' age-old' : '') + '">' + e.age + '</td>' +
-        '<td class="notes-cell col-notes">' + (e.notes || '—') + '</td>' +
-        '<td class="col-del"><button class="del-btn" onclick="removeEntry(' + i + ')" title="Remove">' +
+        '<td><span class="type-badge ' + badgeClass + '">' + badgeLabel + '</span></td>' +
+        '<td class="mono" style="font-size:0.78rem;word-break:break-all;">' + e.code + '</td>' +
+        '<td>' + e.date + '</td>' +
+        '<td class="' + (e.old ? 'age-old' : '') + '">' + e.age + '</td>' +
+        '<td class="notes-cell">' + (e.notes || '—') + '</td>' +
+        '<td><button class="del-btn" onclick="removeEntry(' + i + ')" title="Remove">' +
         '<svg width="13" height="13" viewBox="0 0 20 20" fill="none"><line x1="5" y1="5" x2="15" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="15" y1="5" x2="5" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>' +
         '</button></td>';
       tbody.appendChild(tr);
@@ -476,10 +566,18 @@
   }
 
   function copyCSV() {
-    var rows = ['Date Code,Date Range,Age,Notes,Logged On'];
+    var rows = ['Type,Code / Serial,Date,Age,Notes,Logged On'];
     log.forEach(function(e) {
+      var typeLabel = e.type === 'battery' ? 'Battery/Charger' : e.type === 'radio' ? 'Radio' : 'Hand Mic';
       var n = (e.notes || '').replace(/"/g, '""');
-      rows.push([e.code, '"' + e.range + '"', '"' + e.age + '"', '"' + n + '"', e.on].join(','));
+      rows.push([
+        '"' + typeLabel + '"',
+        '"' + e.code + '"',
+        '"' + e.date + '"',
+        '"' + e.age + '"',
+        '"' + n + '"',
+        e.on
+      ].join(','));
     });
     navigator.clipboard.writeText(rows.join('\n')).then(function() {
       show('alert-copied', true);
