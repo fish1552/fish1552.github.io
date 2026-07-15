@@ -35,7 +35,16 @@
       border-radius: 5px; padding: 3px 9px; display: inline-block; margin-bottom: 8px;
     }
     .section-label.radio  { background: #6c3fc5; }
-    .section-label.mic    { background: #1a7f5a; }
+    .section-label.mic       { background: #1a7f5a; }
+    .section-label.charger-single { background: #b45309; }
+    .section-label.charger-multi  { background: #9a3412; }
+    .section-label.mobile         { background: #1e4fad; }
+    .btn-primary.charger-single-btn { background: #b45309; }
+    .btn-primary.charger-single-btn:hover:not(:disabled) { background: #92400e; }
+    .btn-primary.charger-multi-btn  { background: #9a3412; }
+    .btn-primary.charger-multi-btn:hover:not(:disabled)  { background: #7c2d12; }
+    .btn-primary.mobile-btn { background: #1e4fad; }
+    .btn-primary.mobile-btn:hover:not(:disabled) { background: #1a3d8f; }
  
     /* Cards */
     .card {
@@ -160,21 +169,20 @@
       </div>
       <h1>Motorola Date Code Decoder</h1>
     </div>
-    <p class="subtitle">Batteries &amp; chargers &nbsp;·&nbsp; Radios &nbsp;·&nbsp; Hand microphones</p>
+    <p class="subtitle">Batteries &nbsp;·&nbsp; Chargers &nbsp;·&nbsp; Portable &amp; Mobile Radios &nbsp;·&nbsp; Hand microphones</p>
   </header>
  
-  <!-- ── BATTERY / CHARGER ── -->
   <div class="card">
-    <div class="section-label">Battery / Charger</div>
+    <div class="section-label ">Battery</div>
     <p style="font-size:0.78rem;color:#888;margin-bottom:12px;">4-digit code in YYWW format (e.g. 2425 = year 2024, week 25)</p>
     <div class="field-row">
       <div>
         <label for="b-code">Date code</label>
-        <input type="text" id="b-code" class="code-field" maxlength="4" placeholder="2425" autocomplete="off" oninput="onBatteryInput()" />
+        <input type="text" id="b-code" class="code-field" maxlength="4" placeholder="2425" autocomplete="off" oninput="onYYWWInput('b')" />
       </div>
       <div>
         <label for="b-notes">Serial Number</label>
-        <input type="text" id="b-notes" placeholder="e.g. SN#12345" autocomplete="off" oninput="onBatteryNotes()" />
+        <input type="text" id="b-notes" placeholder="e.g. SN#12345" autocomplete="off" oninput="onYYWWNotes('b')" />
       </div>
     </div>
     <div class="result-area" id="b-result">
@@ -184,13 +192,13 @@
       </div>
       <div class="alert alert-warning" id="b-old">
         <svg class="ic" width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M10 2l8.66 15H1.34L10 2z" stroke="#7a5c00" stroke-width="1.6" stroke-linejoin="round"/><line x1="10" y1="8" x2="10" y2="12" stroke="#7a5c00" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="14.5" r="0.8" fill="#7a5c00"/></svg>
-        Over 3 years old — consider replacing this battery or charger.
+        Over 3 years old — consider replacing this battery.
       </div>
       <div class="alert alert-danger" id="b-dup">
         <svg class="ic" width="15" height="15" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#c0392b" stroke-width="1.6"/><line x1="7" y1="7" x2="13" y2="13" stroke="#c0392b" stroke-width="1.6" stroke-linecap="round"/><line x1="13" y1="7" x2="7" y2="13" stroke="#c0392b" stroke-width="1.6" stroke-linecap="round"/></svg>
         This serial number is already in the log.
       </div>
-      <button class="btn btn-primary" id="b-add" onclick="addEntry('battery')">
+      <button class="btn btn-primary btn-primary" id="b-add" onclick="addEntry('b')">
         <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><line x1="10" y1="4" x2="10" y2="16" stroke="white" stroke-width="2" stroke-linecap="round"/><line x1="4" y1="10" x2="16" y2="10" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
         Add to log
       </button>
@@ -201,45 +209,161 @@
     </div>
   </div>
  
-  <!-- ── RADIO ── -->
   <div class="card">
-    <div class="section-label radio">Radio</div>
-    <p style="font-size:0.78rem;color:#888;margin-bottom:12px;">Enter the full serial number — year &amp; month are decoded automatically from positions 5 &amp; 6</p>
+    <div class="section-label charger-single">Single-Bay Charger</div>
+    <p style="font-size:0.78rem;color:#888;margin-bottom:12px;">4-digit code in YYWW format (e.g. 2425 = year 2024, week 25)</p>
     <div class="field-row">
       <div>
-        <label for="r-serial">Serial Number</label>
-        <input type="text" id="r-serial" class="radio-code-field" placeholder="e.g. 123ABxxxx" autocomplete="off" oninput="onRadioInput()" />
+        <label for="cs-code">Date code</label>
+        <input type="text" id="cs-code" class="code-field" maxlength="4" placeholder="2425" autocomplete="off" oninput="onYYWWInput('cs')" />
       </div>
       <div>
-        <label for="r-date-display">Date <span style="font-weight:400;text-transform:none;letter-spacing:0;">(auto-decoded)</span></label>
-        <input type="text" id="r-date-display" placeholder="—" readonly style="background:#f7f8fa;color:#555;cursor:default;border-color:#e2e5ea;" />
+        <label for="cs-notes">Serial Number</label>
+        <input type="text" id="cs-notes" placeholder="e.g. SN#12345" autocomplete="off" oninput="onYYWWNotes('cs')" />
       </div>
     </div>
-    <div class="result-area" id="r-result">
+    <div class="result-area" id="cs-result">
       <div class="result-grid">
-        <div class="result-cell"><div class="cell-label">Manufacture date</div><div class="cell-value" id="r-r-date">—</div></div>
-        <div class="result-cell"><div class="cell-label">Age</div><div class="cell-value" id="r-r-age">—</div></div>
+        <div class="result-cell"><div class="cell-label">Week start date</div><div class="cell-value" id="cs-r-range">—</div></div>
+        <div class="result-cell"><div class="cell-label">Age</div><div class="cell-value" id="cs-r-age">—</div></div>
       </div>
-      <div class="result-cell" style="margin-bottom:10px;">
-        <div class="cell-label">Decoded from</div>
-        <div class="cell-value" id="r-r-chars" style="font-family:'Courier New',monospace;">—</div>
-      </div>
-      <div class="alert alert-warning" id="r-old">
+      <div class="alert alert-warning" id="cs-old">
         <svg class="ic" width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M10 2l8.66 15H1.34L10 2z" stroke="#7a5c00" stroke-width="1.6" stroke-linejoin="round"/><line x1="10" y1="8" x2="10" y2="12" stroke="#7a5c00" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="14.5" r="0.8" fill="#7a5c00"/></svg>
-        Over 3 years old — consider scheduling maintenance or replacement.
+        Over 3 years old — consider replacing this charger.
       </div>
-      <div class="alert alert-danger" id="r-dup">
+      <div class="alert alert-danger" id="cs-dup">
         <svg class="ic" width="15" height="15" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#c0392b" stroke-width="1.6"/><line x1="7" y1="7" x2="13" y2="13" stroke="#c0392b" stroke-width="1.6" stroke-linecap="round"/><line x1="13" y1="7" x2="7" y2="13" stroke="#c0392b" stroke-width="1.6" stroke-linecap="round"/></svg>
         This serial number is already in the log.
       </div>
-      <button class="btn btn-primary radio-btn" id="r-add" onclick="addEntry('radio')">
+      <button class="btn btn-primary charger-single-btn" id="cs-add" onclick="addEntry('cs')">
         <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><line x1="10" y1="4" x2="10" y2="16" stroke="white" stroke-width="2" stroke-linecap="round"/><line x1="4" y1="10" x2="16" y2="10" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
         Add to log
       </button>
     </div>
-    <div class="alert alert-danger" id="r-err" style="margin-top:10px;">
+    <div class="alert alert-danger" id="cs-err" style="margin-top:10px;">
       <svg class="ic" width="15" height="15" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#c0392b" stroke-width="1.6"/><line x1="10" y1="6" x2="10" y2="11" stroke="#c0392b" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="13.5" r="0.8" fill="#c0392b"/></svg>
-      <span id="r-err-text"></span>
+      <span id="cs-err-text"></span>
+    </div>
+  </div>
+ 
+  <div class="card">
+    <div class="section-label charger-multi">Multi-Bay Charger</div>
+    <p style="font-size:0.78rem;color:#888;margin-bottom:12px;">4-digit code in YYWW format (e.g. 2425 = year 2024, week 25)</p>
+    <div class="field-row">
+      <div>
+        <label for="cm-code">Date code</label>
+        <input type="text" id="cm-code" class="code-field" maxlength="4" placeholder="2425" autocomplete="off" oninput="onYYWWInput('cm')" />
+      </div>
+      <div>
+        <label for="cm-notes">Serial Number</label>
+        <input type="text" id="cm-notes" placeholder="e.g. SN#12345" autocomplete="off" oninput="onYYWWNotes('cm')" />
+      </div>
+    </div>
+    <div class="result-area" id="cm-result">
+      <div class="result-grid">
+        <div class="result-cell"><div class="cell-label">Week start date</div><div class="cell-value" id="cm-r-range">—</div></div>
+        <div class="result-cell"><div class="cell-label">Age</div><div class="cell-value" id="cm-r-age">—</div></div>
+      </div>
+      <div class="alert alert-warning" id="cm-old">
+        <svg class="ic" width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M10 2l8.66 15H1.34L10 2z" stroke="#7a5c00" stroke-width="1.6" stroke-linejoin="round"/><line x1="10" y1="8" x2="10" y2="12" stroke="#7a5c00" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="14.5" r="0.8" fill="#7a5c00"/></svg>
+        Over 3 years old — consider replacing this charger.
+      </div>
+      <div class="alert alert-danger" id="cm-dup">
+        <svg class="ic" width="15" height="15" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#c0392b" stroke-width="1.6"/><line x1="7" y1="7" x2="13" y2="13" stroke="#c0392b" stroke-width="1.6" stroke-linecap="round"/><line x1="13" y1="7" x2="7" y2="13" stroke="#c0392b" stroke-width="1.6" stroke-linecap="round"/></svg>
+        This serial number is already in the log.
+      </div>
+      <button class="btn btn-primary charger-multi-btn" id="cm-add" onclick="addEntry('cm')">
+        <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><line x1="10" y1="4" x2="10" y2="16" stroke="white" stroke-width="2" stroke-linecap="round"/><line x1="4" y1="10" x2="16" y2="10" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+        Add to log
+      </button>
+    </div>
+    <div class="alert alert-danger" id="cm-err" style="margin-top:10px;">
+      <svg class="ic" width="15" height="15" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#c0392b" stroke-width="1.6"/><line x1="10" y1="6" x2="10" y2="11" stroke="#c0392b" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="13.5" r="0.8" fill="#c0392b"/></svg>
+      <span id="cm-err-text"></span>
+    </div>
+  </div>
+ 
+  <!-- ── PORTABLE RADIO ── -->
+  <div class="card">
+    <div class="section-label radio">Portable Radio</div>
+    <p style="font-size:0.78rem;color:#888;margin-bottom:12px;">Enter the full serial number — year &amp; month are decoded automatically from positions 5 &amp; 6</p>
+    <div class="field-row">
+      <div>
+        <label for="rp-serial">Serial Number</label>
+        <input type="text" id="rp-serial" class="radio-code-field" placeholder="e.g. 123ABxxxx" autocomplete="off" oninput="onRadioInput('rp')" />
+      </div>
+      <div>
+        <label for="rp-date-display">Date <span style="font-weight:400;text-transform:none;letter-spacing:0;">(auto-decoded)</span></label>
+        <input type="text" id="rp-date-display" placeholder="—" readonly style="background:#f7f8fa;color:#555;cursor:default;border-color:#e2e5ea;" />
+      </div>
+    </div>
+    <div class="result-area" id="rp-result">
+      <div class="result-grid">
+        <div class="result-cell"><div class="cell-label">Manufacture date</div><div class="cell-value" id="rp-r-date">—</div></div>
+        <div class="result-cell"><div class="cell-label">Age</div><div class="cell-value" id="rp-r-age">—</div></div>
+      </div>
+      <div class="result-cell" style="margin-bottom:10px;">
+        <div class="cell-label">Decoded from</div>
+        <div class="cell-value" id="rp-r-chars" style="font-family:'Courier New',monospace;">—</div>
+      </div>
+      <div class="alert alert-warning" id="rp-old">
+        <svg class="ic" width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M10 2l8.66 15H1.34L10 2z" stroke="#7a5c00" stroke-width="1.6" stroke-linejoin="round"/><line x1="10" y1="8" x2="10" y2="12" stroke="#7a5c00" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="14.5" r="0.8" fill="#7a5c00"/></svg>
+        Over 3 years old — consider scheduling maintenance or replacement.
+      </div>
+      <div class="alert alert-danger" id="rp-dup">
+        <svg class="ic" width="15" height="15" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#c0392b" stroke-width="1.6"/><line x1="7" y1="7" x2="13" y2="13" stroke="#c0392b" stroke-width="1.6" stroke-linecap="round"/><line x1="13" y1="7" x2="7" y2="13" stroke="#c0392b" stroke-width="1.6" stroke-linecap="round"/></svg>
+        This serial number is already in the log.
+      </div>
+      <button class="btn btn-primary radio-btn" id="rp-add" onclick="addEntry('rp')">
+        <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><line x1="10" y1="4" x2="10" y2="16" stroke="white" stroke-width="2" stroke-linecap="round"/><line x1="4" y1="10" x2="16" y2="10" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+        Add to log
+      </button>
+    </div>
+    <div class="alert alert-danger" id="rp-err" style="margin-top:10px;">
+      <svg class="ic" width="15" height="15" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#c0392b" stroke-width="1.6"/><line x1="10" y1="6" x2="10" y2="11" stroke="#c0392b" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="13.5" r="0.8" fill="#c0392b"/></svg>
+      <span id="rp-err-text"></span>
+    </div>
+  </div>
+ 
+  <!-- ── MOBILE RADIO ── -->
+  <div class="card">
+    <div class="section-label mobile">Mobile Radio</div>
+    <p style="font-size:0.78rem;color:#888;margin-bottom:12px;">Enter the full serial number — year &amp; month are decoded automatically from positions 5 &amp; 6</p>
+    <div class="field-row">
+      <div>
+        <label for="rm-serial">Serial Number</label>
+        <input type="text" id="rm-serial" class="radio-code-field" placeholder="e.g. 123ABxxxx" autocomplete="off" oninput="onRadioInput('rm')" />
+      </div>
+      <div>
+        <label for="rm-date-display">Date <span style="font-weight:400;text-transform:none;letter-spacing:0;">(auto-decoded)</span></label>
+        <input type="text" id="rm-date-display" placeholder="—" readonly style="background:#f7f8fa;color:#555;cursor:default;border-color:#e2e5ea;" />
+      </div>
+    </div>
+    <div class="result-area" id="rm-result">
+      <div class="result-grid">
+        <div class="result-cell"><div class="cell-label">Manufacture date</div><div class="cell-value" id="rm-r-date">—</div></div>
+        <div class="result-cell"><div class="cell-label">Age</div><div class="cell-value" id="rm-r-age">—</div></div>
+      </div>
+      <div class="result-cell" style="margin-bottom:10px;">
+        <div class="cell-label">Decoded from</div>
+        <div class="cell-value" id="rm-r-chars" style="font-family:'Courier New',monospace;">—</div>
+      </div>
+      <div class="alert alert-warning" id="rm-old">
+        <svg class="ic" width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M10 2l8.66 15H1.34L10 2z" stroke="#7a5c00" stroke-width="1.6" stroke-linejoin="round"/><line x1="10" y1="8" x2="10" y2="12" stroke="#7a5c00" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="14.5" r="0.8" fill="#7a5c00"/></svg>
+        Over 3 years old — consider scheduling maintenance or replacement.
+      </div>
+      <div class="alert alert-danger" id="rm-dup">
+        <svg class="ic" width="15" height="15" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#c0392b" stroke-width="1.6"/><line x1="7" y1="7" x2="13" y2="13" stroke="#c0392b" stroke-width="1.6" stroke-linecap="round"/><line x1="13" y1="7" x2="7" y2="13" stroke="#c0392b" stroke-width="1.6" stroke-linecap="round"/></svg>
+        This serial number is already in the log.
+      </div>
+      <button class="btn btn-primary mobile-btn" id="rm-add" onclick="addEntry('rm')">
+        <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><line x1="10" y1="4" x2="10" y2="16" stroke="white" stroke-width="2" stroke-linecap="round"/><line x1="4" y1="10" x2="16" y2="10" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+        Add to log
+      </button>
+    </div>
+    <div class="alert alert-danger" id="rm-err" style="margin-top:10px;">
+      <svg class="ic" width="15" height="15" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#c0392b" stroke-width="1.6"/><line x1="10" y1="6" x2="10" y2="11" stroke="#c0392b" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="13.5" r="0.8" fill="#c0392b"/></svg>
+      <span id="rm-err-text"></span>
     </div>
   </div>
  
@@ -323,7 +447,8 @@
 <script>
   // ── Shared log ──
   var log = [];
-  var curBattery = null, curRadio = null, curMic = null;
+  // current decoded results keyed by prefix
+  var curDecoded = {};
  
   function isDup(notes) {
     var n = (notes || '').trim().toLowerCase();
@@ -332,7 +457,6 @@
   }
  
   function calcAge(year, month) {
-    // month is 0-based
     var mfgDate = new Date(year, month, 1);
     var now = new Date();
     var days = Math.floor((now - mfgDate) / 86400000);
@@ -349,15 +473,15 @@
     if (el) el.style.display = visible ? 'block' : 'none';
   }
  
-  function setDupState(addId, dupAlertId, notes) {
+  function setDupState(prefix, notes) {
     var dup = isDup(notes);
-    show(dupAlertId, dup);
-    var btn = document.getElementById(addId);
-    if (btn) { btn.disabled = dup; }
+    show(prefix + '-dup', dup);
+    var btn = document.getElementById(prefix + '-add');
+    if (btn) btn.disabled = dup;
   }
  
-  // ── Battery / Charger ──
-  function decodeBattery(raw) {
+  // ── Generic YYWW decoder (battery, single-bay charger, multi-bay charger) ──
+  function decodeYYWW(raw) {
     if (!/^\d{4}$/.test(raw)) return null;
     var yy = parseInt(raw.slice(0, 2), 10);
     var ww = parseInt(raw.slice(2, 4), 10);
@@ -370,46 +494,44 @@
     var wStart = new Date(mon1); wStart.setDate(mon1.getDate() + (ww - 1) * 7);
     var f = function(d) { return d.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}); };
     var a = calcAge(yr, wStart.getMonth());
-    return { code: raw, range: f(wStart), age: a.age, old: a.old };
+    return { range: f(wStart), age: a.age, old: a.old };
   }
  
-  function onBatteryInput() {
-    var raw = document.getElementById('b-code').value.trim();
-    show('b-err', false); show('b-result', false); show('b-old', false); show('b-dup', false);
-    curBattery = null;
+  function onYYWWInput(prefix) {
+    var raw = document.getElementById(prefix + '-code').value.trim();
+    show(prefix + '-err', false); show(prefix + '-result', false);
+    show(prefix + '-old', false); show(prefix + '-dup', false);
+    curDecoded[prefix] = null;
     if (raw.length < 4) return;
     if (!/^\d{4}$/.test(raw)) {
-      document.getElementById('b-err-text').textContent = 'Enter exactly 4 digits.';
-      show('b-err', true); return;
+      document.getElementById(prefix + '-err-text').textContent = 'Enter exactly 4 digits.';
+      show(prefix + '-err', true); return;
     }
-    var r = decodeBattery(raw);
+    var r = decodeYYWW(raw);
     if (!r) {
-      document.getElementById('b-err-text').textContent = 'Week must be between 01 and 53.';
-      show('b-err', true); return;
+      document.getElementById(prefix + '-err-text').textContent = 'Week must be between 01 and 53.';
+      show(prefix + '-err', true); return;
     }
-    curBattery = r;
-    document.getElementById('b-r-range').textContent = r.range;
-    document.getElementById('b-r-age').textContent   = r.age;
-    show('b-result', true);
-    show('b-old', r.old);
-    setDupState('b-add', 'b-dup', document.getElementById('b-notes').value);
+    curDecoded[prefix] = r;
+    document.getElementById(prefix + '-r-range').textContent = r.range;
+    document.getElementById(prefix + '-r-age').textContent   = r.age;
+    show(prefix + '-result', true);
+    show(prefix + '-old', r.old);
+    setDupState(prefix, document.getElementById(prefix + '-notes').value);
   }
  
-  function onBatteryNotes() {
-    if (!curBattery) return;
-    setDupState('b-add', 'b-dup', document.getElementById('b-notes').value);
+  function onYYWWNotes(prefix) {
+    if (!curDecoded[prefix]) return;
+    setDupState(prefix, document.getElementById(prefix + '-notes').value);
   }
  
-  // ── Radio ──
-  // Year map: letter → most recent year (cycle repeats: A=1976/2000/2024, etc.)
-  // Letters cycle every 24 steps (A-Z skipping I and O)
+  // ── Radio (Portable + Mobile — same decode logic) ──
   var RADIO_YEAR_LETTERS = ['A','B','C','D','E','F','G','H','J','K','L','M',
                              'N','P','Q','R','S','T','U','V','W','X','Y','Z'];
   var RADIO_YEAR = {};
   (function() {
     var startYear = 1976;
     RADIO_YEAR_LETTERS.forEach(function(c, i) {
-      // Build all possible years for this letter, pick the most recent <= current year
       var possible = [];
       var yr = startYear + i;
       var curYr = new Date().getFullYear();
@@ -417,7 +539,6 @@
       RADIO_YEAR[c] = possible[possible.length - 1];
     });
   })();
-  // Month map: letter → 0-based month index
   var RADIO_MONTH = {};
   (function() {
     var pairs = [['A','B'],['C','D'],['E','F'],['G','H'],['J','K'],
@@ -426,11 +547,11 @@
     pairs.forEach(function(p, i) { p.forEach(function(c) { RADIO_MONTH[c] = i; }); });
   })();
  
-  function decodeRadio(serial) {
+  function decodeRadioSerial(serial) {
     var s = serial.toUpperCase().replace(/\s/g, '');
     if (s.length < 6) return null;
-    var yc = s[4]; // 5th character (0-indexed = 4)
-    var mc = s[5]; // 6th character
+    var yc = s[4];
+    var mc = s[5];
     var yr = RADIO_YEAR[yc];
     if (yr === undefined) return { error: 'Position 5 letter "' + yc + '" is not a valid year code.' };
     var mo = RADIO_MONTH[mc];
@@ -439,40 +560,39 @@
                       'July','August','September','October','November','December'];
     var a = calcAge(yr, mo);
     return {
-      serial: serial, date: monthNames[mo] + ' ' + yr,
+      date: monthNames[mo] + ' ' + yr,
       chars: 'Pos 5: ' + yc + ' = ' + yr + '  |  Pos 6: ' + mc + ' = ' + monthNames[mo],
       age: a.age, old: a.old
     };
   }
  
-  function onRadioInput() {
-    var raw = document.getElementById('r-serial').value.trim();
-    var dateField = document.getElementById('r-date-display');
-    show('r-err', false); show('r-result', false); show('r-old', false); show('r-dup', false);
-    curRadio = null;
+  function onRadioInput(prefix) {
+    var raw = document.getElementById(prefix + '-serial').value.trim();
+    var dateField = document.getElementById(prefix + '-date-display');
+    show(prefix + '-err', false); show(prefix + '-result', false);
+    show(prefix + '-old', false); show(prefix + '-dup', false);
+    curDecoded[prefix] = null;
     dateField.value = '';
     if (raw.length < 6) return;
-    var r = decodeRadio(raw);
+    var r = decodeRadioSerial(raw);
     if (!r) {
-      document.getElementById('r-err-text').textContent = 'Serial number must be at least 6 characters.';
-      show('r-err', true); return;
+      document.getElementById(prefix + '-err-text').textContent = 'Serial number must be at least 6 characters.';
+      show(prefix + '-err', true); return;
     }
     if (r.error) {
-      document.getElementById('r-err-text').textContent = r.error;
+      document.getElementById(prefix + '-err-text').textContent = r.error;
       dateField.value = 'Invalid code';
-      show('r-err', true); return;
+      show(prefix + '-err', true); return;
     }
-    curRadio = r;
+    curDecoded[prefix] = r;
     dateField.value = r.date;
-    document.getElementById('r-r-date').textContent  = r.date;
-    document.getElementById('r-r-age').textContent   = r.age;
-    document.getElementById('r-r-chars').textContent = r.chars;
-    show('r-result', true);
-    show('r-old', r.old);
-    setDupState('r-add', 'r-dup', document.getElementById('r-serial').value.trim());
+    document.getElementById(prefix + '-r-date').textContent  = r.date;
+    document.getElementById(prefix + '-r-age').textContent   = r.age;
+    document.getElementById(prefix + '-r-chars').textContent = r.chars;
+    show(prefix + '-result', true);
+    show(prefix + '-old', r.old);
+    setDupState(prefix, raw);
   }
- 
-  function onRadioNotes() { /* serial number field is used directly */ }
  
   // ── Hand Microphone ──
   function decodeMic(raw) {
@@ -494,7 +614,7 @@
   function onMicInput() {
     var raw = document.getElementById('m-code').value.trim();
     show('m-err', false); show('m-result', false); show('m-old', false); show('m-dup', false);
-    curMic = null;
+    curDecoded['m'] = null;
     if (raw.length < 4) return;
     if (!/^\d{4}$/.test(raw)) {
       document.getElementById('m-err-text').textContent = 'Enter exactly 4 digits.';
@@ -505,50 +625,78 @@
       document.getElementById('m-err-text').textContent = 'Week must be between 01 and 52.';
       show('m-err', true); return;
     }
-    curMic = r;
+    curDecoded['m'] = r;
     document.getElementById('m-r-date').textContent = r.date;
     document.getElementById('m-r-age').textContent  = r.age;
     show('m-result', true);
     show('m-old', r.old);
-    setDupState('m-add', 'm-dup', document.getElementById('m-notes').value);
+    setDupState('m', document.getElementById('m-notes').value);
   }
  
   function onMicNotes() {
-    if (!curMic) return;
-    setDupState('m-add', 'm-dup', document.getElementById('m-notes').value);
+    if (!curDecoded['m']) return;
+    setDupState('m', document.getElementById('m-notes').value);
   }
  
   // ── Add to shared log ──
-  function addEntry(type) {
-    var cur, codeVal, dateVal, ageVal, oldVal, notesId, codeId, resultId, oldId, dupId, errId;
-    if (type === 'battery') {
-      cur = curBattery; codeVal = cur ? cur.code : ''; dateVal = cur ? cur.range : '';
-      ageVal = cur ? cur.age : ''; oldVal = cur ? cur.old : false;
-      notesId='b-notes'; codeId='b-code'; resultId='b-result'; oldId='b-old'; dupId='b-dup'; errId='b-err';
-    } else if (type === 'radio') {
-      cur = curRadio; codeVal = cur ? document.getElementById('r-serial').value.trim().toUpperCase() : '';
-      dateVal = cur ? cur.date : ''; ageVal = cur ? cur.age : ''; oldVal = cur ? cur.old : false;
-      notesId='r-serial'; codeId='r-serial'; resultId='r-result'; oldId='r-old'; dupId='r-dup'; errId='r-err';
-    } else {
-      cur = curMic; codeVal = cur ? cur.code : ''; dateVal = cur ? cur.date : '';
-      ageVal = cur ? cur.age : ''; oldVal = cur ? cur.old : false;
-      notesId='m-notes'; codeId='m-code'; resultId='m-result'; oldId='m-old'; dupId='m-dup'; errId='m-err';
-    }
+  // type labels for CSV
+  var TYPE_LABELS = {
+    'b':  'Battery',
+    'cs': 'Single-Bay Charger',
+    'cm': 'Multi-Bay Charger',
+    'rp': 'Portable Radio',
+    'rm': 'Mobile Radio',
+    'm':  'Hand Mic'
+  };
+  var RADIO_PREFIXES = ['rp', 'rm'];
+  var YYWW_PREFIXES  = ['b', 'cs', 'cm'];
+ 
+  function addEntry(prefix) {
+    var cur = curDecoded[prefix];
     if (!cur) return;
-    var notes = document.getElementById(notesId).value.trim();
-    if (isDup(notes)) return;
+    var isRadio = RADIO_PREFIXES.indexOf(prefix) !== -1;
+    var codeVal, dateVal, notesVal;
+    if (isRadio) {
+      codeVal  = document.getElementById(prefix + '-serial').value.trim().toUpperCase();
+      notesVal = codeVal; // serial IS the identifier for radios
+      dateVal  = cur.date;
+    } else if (prefix === 'm') {
+      codeVal  = document.getElementById('m-code').value.trim();
+      notesVal = document.getElementById('m-notes').value.trim();
+      dateVal  = cur.date;
+    } else {
+      codeVal  = document.getElementById(prefix + '-code').value.trim();
+      notesVal = document.getElementById(prefix + '-notes').value.trim();
+      dateVal  = cur.range;
+    }
+    if (isDup(notesVal)) return;
     log.push({
-      type: type, code: codeVal, date: dateVal,
-      age: ageVal, old: oldVal, notes: notes,
+      prefix: prefix,
+      typeLabel: TYPE_LABELS[prefix] || prefix,
+      code: codeVal,
+      date: dateVal,
+      age: cur.age,
+      old: cur.old,
+      notes: notesVal,
       on: new Date().toLocaleDateString('en-US')
     });
     renderLog();
-    document.getElementById(codeId).value = '';
-    document.getElementById(notesId).value = '';
-    show(resultId, false); show(oldId, false); show(dupId, false); show(errId, false);
-    if (type === 'battery') curBattery = null;
-    else if (type === 'radio') curRadio = null;
-    else curMic = null;
+    // Clear fields
+    if (isRadio) {
+      document.getElementById(prefix + '-serial').value = '';
+      document.getElementById(prefix + '-date-display').value = '';
+    } else if (prefix === 'm') {
+      document.getElementById('m-code').value = '';
+      document.getElementById('m-notes').value = '';
+    } else {
+      document.getElementById(prefix + '-code').value = '';
+      document.getElementById(prefix + '-notes').value = '';
+    }
+    show(prefix + '-result', false);
+    show(prefix + '-old', false);
+    show(prefix + '-dup', false);
+    show(prefix + '-err', false);
+    curDecoded[prefix] = null;
   }
  
   function removeEntry(i) {
@@ -563,11 +711,12 @@
     var tbody = document.getElementById('log-body');
     tbody.innerHTML = '';
     log.forEach(function(e, i) {
-      var badgeClass = e.type === 'battery' ? 'type-battery' : e.type === 'radio' ? 'type-radio' : 'type-mic';
-      var badgeLabel = e.type === 'battery' ? 'Battery' : e.type === 'radio' ? 'Radio' : 'Mic';
+      var badgeColors = {'b':'#0062cc','cs':'#b45309','cm':'#9a3412','rp':'#6c3fc5','rm':'#1e4fad','m':'#1a7f5a'};
+      var badgeColor = badgeColors[e.prefix] || '#555';
+      var badgeLabel = e.typeLabel || e.prefix;
       var tr = document.createElement('tr');
       tr.innerHTML =
-        '<td><span class="type-badge ' + badgeClass + '">' + badgeLabel + '</span></td>' +
+        '<td><span class="type-badge" style="background:' + badgeColor + '">' + badgeLabel + '</span></td>' +
         '<td class="mono" style="font-size:0.78rem;word-break:break-all;">' + e.code + '</td>' +
         '<td>' + e.date + '</td>' +
         '<td class="' + (e.old ? 'age-old' : '') + '">' + e.age + '</td>' +
@@ -582,7 +731,7 @@
   function copyCSV() {
     var rows = ['Type,Code / Serial,Date,Age,Serial Number,Logged On'];
     log.forEach(function(e) {
-      var typeLabel = e.type === 'battery' ? 'Battery/Charger' : e.type === 'radio' ? 'Radio' : 'Hand Mic';
+      var typeLabel = e.typeLabel || e.prefix;
       var n = (e.notes || '').replace(/"/g, '""');
       rows.push([
         '"' + typeLabel + '"',
@@ -603,8 +752,10 @@
     if (!log.length) return;
     if (!confirm('Clear all ' + log.length + ' entries?')) return;
     log = [];
+    curDecoded = {};
     renderLog();
   }
 </script>
 </body>
 </html>
+ 
