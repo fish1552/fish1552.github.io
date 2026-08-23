@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Firefighter Pay 2026 v1.17</title>
+<title>Firefighter Pay 2026</title>
 <meta name="theme-color" content="#1b1a19">
 <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='96' fill='%231b1a19'/><path d='M256 96c22 44 6 70-18 92-30 28-52 55-52 100a122 122 0 0 0 244 0c0-30-12-52-30-72-6 26-20 36-32 40 14-40-4-78-40-104-20-14-28-34-22-56z' fill='%23c1272d'/><text x='256' y='430' font-family='Arial,sans-serif' font-size='90' font-weight='700' fill='%23ffffff' text-anchor='middle'>FF</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -99,9 +99,16 @@
 
   <header>
     <span class="eyebrow">Federal Pay Program</span>
-    <h1>Firefighter Pay<br>2026<br><small><small><small>Version 1.17</small></small></small></h1>
+	<h1>Firefighter Pay<br>2026<br><small><small><small>Version 1.171</small></small></small></h1>
     <div class="locality"><span class="dot"></span><span>Locality: <b id="loclabel">Rest of the United States</b></span></div>
   </header>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" data-view="statement" role="tab" aria-selected="true">Statement</button>
+    <button class="tab" data-view="promo" role="tab" aria-selected="false">Promotion</button>
+    <button class="tab" data-view="tax" role="tab" aria-selected="false">OT Tax</button>
+    <button class="tab" data-view="compare" role="tab" aria-selected="false">Compare</button>
+  </div>
 
   <section class="block">
     <span class="label">Locality / Pay Area</span>
@@ -126,26 +133,133 @@
       <input id="rslider" type="range" min="0" max="15" step="0.1" value="0" aria-label="Raise percentage slider">
       <div class="rbox"><input id="rnum" type="number" min="0" max="100" step="0.1" value="0" inputmode="decimal" aria-label="Raise percentage"><span class="rpct">%</span></div>
     </div>
-    <div class="rhint">Enter next year's approved raise (e.g. 2.3% or 4.3%) to project pay in the <b>Statement</b> below. Set to 0 for current 2026 pay.</div>
+    <div class="rhint">Enter next year's approved raise (e.g. 2.3% or 4.3%) to project pay in the <b>Statement</b> below. Set to 0 for current <span class="yr">2026</span> pay.</div>
   </section>
 
-  <div class="tabs" role="tablist">
-    <button class="tab" data-view="statement" role="tab" aria-selected="true">Statement</button>
-    <button class="tab" data-view="promo" role="tab" aria-selected="false">Promotion</button>
-    <button class="tab" data-view="tax" role="tab" aria-selected="false">OT Tax</button>
-    <button class="tab" data-view="compare" role="tab" aria-selected="false">Compare</button>
-  </div>
   <div class="panel" id="panel"></div>
 
   <div class="foot">
     <div class="soon" id="colanote" style="display:none"><b>COLA area:</b> this locality includes a cost-of-living allowance. Alaska, Hawaii, and territory figures follow the source workbook's COLA method &mdash; double-check against your LES.</div>
-    2026 figures, recomputed per locality from the base GS schedule. Source: OPM Guidance & 2026 Federal Firefighter Pay Program by
-    <a href="https://fedfirepay.net" target="_blank" rel="noopener">FedFirePay LLC</a>. Reference only &mdash; confirm against your LES.
+    <span class="yr">2026</span> figures, recomputed per locality from the base GS schedule. Source: <span class="yr">2026</span> Federal Firefighter Pay Program by
+    <a href="https://fedfirepay.net" rel="noopener">FedFirePay LLC</a>. Reference only &mdash; confirm against your LES.
   </div>
 
 <script>
 
-const P = {"NOLOC":{"3":[27708,28632,29556,30480,31404,32328,33252,34176,35100,36024],"4":[31103,32140,33177,34214,35251,36288,37325,38362,39399,40436],"5":[34799,35959,37119,38279,39439,40599,41759,42919,44079,45239],"6":[38791,40084,41377,42670,43963,45256,46549,47842,49135,50428],"7":[43106,44543,45980,47417,48854,50291,51728,53165,54602,56039],"8":[47738,49329,50920,52511,54102,55693,57284,58875,60466,62057],"9":[52727,54485,56243,58001,59759,61517,63275,65033,66791,68549],"10":[58064,59999,61934,63869,65804,67739,69674,71609,73544,75479],"11":[63795,65922,68049,70176,72303,74430,76557,78684,80811,82938],"12":[76463,79012,81561,84110,86659,89208,91757,94306,96855,99404],"13":[90925,93956,96987,100018,103049,106080,109111,112142,115173,118204],"14":[107446,111028,114610,118192,121774,125356,128938,132520,136102,139684]},"SRF":{"3":[36464,37388,38312,39236,40160,41084,42008,42932,43856,44780],"4":[37193,38230,39267,40304,41341,0,0,0,0,0]},"LOCS":[{"n":"Rest of the United States","r":0.1706,"c":0},{"n":"Alaska-Anchorage-Fairbanks-Juneau","r":0.3236,"c":0.0149},{"n":"Alaska-Rest of Alaska","r":0.3236,"c":0.03},{"n":"Alaska-Clear SFS-Special Rates","r":0.3236,"c":0.03},{"n":"Albany-Schenectady, NY-MA","r":0.2077,"c":0},{"n":"Albuquerque-Santa Fe-Las Vegas, NM","r":0.1833,"c":0},{"n":"Atlanta-Athens-Clarke County-Sandy Springs, GA-AL","r":0.2379,"c":0},{"n":"Austin-Round Rock-Georgetown, TX","r":0.2035,"c":0},{"n":"Birmingham-Hoover-Talladega, AL","r":0.1824,"c":0},{"n":"Boston-Worcester-Providence, MA-RI-NH-ME","r":0.3258,"c":0},{"n":"Buffalo-Cheektowaga-Olean, NY","r":0.2241,"c":0},{"n":"Burlington-South Burlington-Barre, VT","r":0.1945,"c":0},{"n":"Charlotte-Concord, NC-SC","r":0.1967,"c":0},{"n":"Chicago-Naperville, IL-IN-WI","r":0.3086,"c":0},{"n":"Cincinnati-Wilmington-Maysville, OH-KY-IN","r":0.2193,"c":0},{"n":"Cleveland-Akron-Canton, OH","r":0.2223,"c":0},{"n":"Colorado Springs, CO","r":0.2015,"c":0},{"n":"Columbus-Marion-Zanesville, OH","r":0.2215,"c":0},{"n":"Corpus Christi-Kingsville-Alice, TX","r":0.1763,"c":0},{"n":"Dallas-Fort Worth, TX-OK","r":0.2726,"c":0},{"n":"Davenport-Moline, IA-IL","r":0.1893,"c":0},{"n":"Dayton-Springfield-Kettering, OH","r":0.2142,"c":0},{"n":"Denver-Aurora, CO","r":0.3052,"c":0},{"n":"Des Moines-Ames-West Des Moines, IA","r":0.1801,"c":0},{"n":"Detroit-Warren-Ann Arbor, MI","r":0.2912,"c":0},{"n":"Fresno-Madera-Hanford, CA","r":0.1765,"c":0},{"n":"Harrisburg-Lebanon, PA","r":0.1943,"c":0},{"n":"Hartford-East Hartford, CT-MA","r":0.3208,"c":0},{"n":"Hawaii-Honolulu-Kauai-Maui and Kalawao","r":0.2221,"c":0.0864},{"n":"Hawaii-(County)","r":0.2221,"c":0.0291},{"n":"Houston-The Woodlands, TX","r":0.35,"c":0},{"n":"Huntsville-Decatur, AL","r":0.2191,"c":0},{"n":"Indianapolis-Carmel-Muncie, IN","r":0.1815,"c":0},{"n":"Kansas City-Overland Park-Kansas City, MO-KS","r":0.1897,"c":0},{"n":"Laredo, TX","r":0.2159,"c":0},{"n":"Las Vegas-Henderson, NV-AZ","r":0.1957,"c":0},{"n":"Los Angeles-Long Beach, CA","r":0.3647,"c":0},{"n":"Miami-Fort Lauderdale-Port St. Lucie, FL","r":0.2467,"c":0},{"n":"Milwaukee-Racine-Waukesha, WI","r":0.2242,"c":0},{"n":"Minneapolis-St. Paul, MN-WI","r":0.2762,"c":0},{"n":"New York-Newark, NY-NJ-CT-PA","r":0.3795,"c":0},{"n":"Omaha-Council Bluffs-Fremont, NE-IA","r":0.1823,"c":0},{"n":"Palm Bay-Melbourne-Titusville, FL","r":0.1793,"c":0},{"n":"Philadelphia-Reading-Camden, PA-NJ-DE-MD","r":0.2899,"c":0},{"n":"Phoenix-Mesa, AZ","r":0.2245,"c":0},{"n":"Pittsburgh-New Castle-Weirton, PA-OH-WV","r":0.2103,"c":0},{"n":"Portland-Vancouver-Salem, OR-WA","r":0.2613,"c":0},{"n":"Raleigh-Durham-Cary, NC","r":0.2224,"c":0},{"n":"Reno-Fernley, NV","r":0.1752,"c":0},{"n":"Richmond, VA","r":0.2228,"c":0},{"n":"Rochester-Batavia-Seneca Falls, NY","r":0.1788,"c":0},{"n":"Sacramento-Roseville, CA-NV","r":0.2976,"c":0},{"n":"San Antonio-New Braunfels-Pearsall, TX","r":0.1878,"c":0},{"n":"San Diego-Chula Vista-Carlsbad, CA","r":0.3372,"c":0},{"n":"San Jose-San Francisco-Oakland, CA","r":0.4634,"c":0},{"n":"Seattle-Tacoma, WA","r":0.3157,"c":0},{"n":"Spokane-Spokane Valley-Coeur d'Alene, WA-ID","r":0.1767,"c":0},{"n":"St. Louis-St. Charles-Farmington, MO-IL","r":0.2003,"c":0},{"n":"Tucson-Nogales, AZ","r":0.1928,"c":0},{"n":"Virginia Beach-Norfolk, VA-NC","r":0.188,"c":0},{"n":"Washington-Baltimore-Arlington, DC-MD-VA-WV-PA","r":0.3394,"c":0},{"n":"Puerto Rico","r":0.1706,"c":0.0249},{"n":"U.S. Virgin Islands","r":0.1706,"c":0.1188},{"n":"American Samoa","r":0.1706,"c":0},{"n":"Johnston and Sand Island","r":0.1706,"c":0},{"n":"Midway Islands","r":0.1706,"c":0},{"n":"Guam and Northern Mariana Islands","r":0.1706,"c":0.1188},{"n":"Wake Island","r":0.1706,"c":0}],"EXEC":197200};
+/* ==================================================================
+   ANNUAL UPDATE AREA - the ONLY part you edit each year.
+   Everything below this block calculates itself from these numbers.
+   Rules: change NUMBERS only. Keep every comma, bracket [ ], brace { }
+   and quote " exactly where it is. Then save and open the file to check.
+   ================================================================== */
+
+// -- 1. Pay year (shown in the title and labels) --
+const PAY_YEAR = 2026;
+
+// -- 2. Executive Schedule Level IV cap (limits GS-13 & GS-14 base pay) --
+const EXEC_CAP = 197200;
+
+// -- 3. BASE GS PAY (the yearly raise changes these the most) --
+const BASE_PAY = {
+  // Base GS pay, Rest of the U.S. with NO locality added. Steps 1-10 left to right.
+  //   Step 1   Step 2   Step 3   Step 4   Step 5   Step 6   Step 7   Step 8   Step 9  Step 10
+   3: [   27708,   28632,   29556,   30480,   31404,   32328,   33252,   34176,   35100,   36024 ],
+   4: [   31103,   32140,   33177,   34214,   35251,   36288,   37325,   38362,   39399,   40436 ],
+   5: [   34799,   35959,   37119,   38279,   39439,   40599,   41759,   42919,   44079,   45239 ],
+   6: [   38791,   40084,   41377,   42670,   43963,   45256,   46549,   47842,   49135,   50428 ],
+   7: [   43106,   44543,   45980,   47417,   48854,   50291,   51728,   53165,   54602,   56039 ],
+   8: [   47738,   49329,   50920,   52511,   54102,   55693,   57284,   58875,   60466,   62057 ],
+   9: [   52727,   54485,   56243,   58001,   59759,   61517,   63275,   65033,   66791,   68549 ],
+  10: [   58064,   59999,   61934,   63869,   65804,   67739,   69674,   71609,   73544,   75479 ],
+  11: [   63795,   65922,   68049,   70176,   72303,   74430,   76557,   78684,   80811,   82938 ],
+  12: [   76463,   79012,   81561,   84110,   86659,   89208,   91757,   94306,   96855,   99404 ],
+  13: [   90925,   93956,   96987,  100018,  103049,  106080,  109111,  112142,  115173,  118204 ],
+  14: [  107446,  111028,  114610,  118192,  121774,  125356,  128938,  132520,  136102,  139684 ],
+};
+
+// -- 4. Special-rate floors for GS-3 & GS-4 --
+const SPECIAL_FLOORS = {
+  // Only GS-3 and GS-4 have special-rate floors. Use 0 where none applies.
+   3: [   36464,   37388,   38312,   39236,   40160,   41084,   42008,   42932,   43856,   44780 ],
+   4: [   37193,   38230,   39267,   40304,   41341,       0,       0,       0,       0,       0 ],
+};
+
+// -- 5. Localities (most years only the middle number, the locality %, changes) --
+const LOCALITIES = [
+  // [ "Pay area name", locality %, COLA % ]  --  17.06% is written 0.1706
+  [ "Rest of the United States", 0.1706, 0 ],
+  [ "Alaska-Anchorage-Fairbanks-Juneau", 0.3236, 0.0149 ],
+  [ "Alaska-Rest of Alaska", 0.3236, 0.03 ],
+  [ "Alaska-Clear SFS-Special Rates", 0.3236, 0.03 ],
+  [ "Albany-Schenectady, NY-MA", 0.2077, 0 ],
+  [ "Albuquerque-Santa Fe-Las Vegas, NM", 0.1833, 0 ],
+  [ "Atlanta-Athens-Clarke County-Sandy Springs, GA-AL", 0.2379, 0 ],
+  [ "Austin-Round Rock-Georgetown, TX", 0.2035, 0 ],
+  [ "Birmingham-Hoover-Talladega, AL", 0.1824, 0 ],
+  [ "Boston-Worcester-Providence, MA-RI-NH-ME", 0.3258, 0 ],
+  [ "Buffalo-Cheektowaga-Olean, NY", 0.2241, 0 ],
+  [ "Burlington-South Burlington-Barre, VT", 0.1945, 0 ],
+  [ "Charlotte-Concord, NC-SC", 0.1967, 0 ],
+  [ "Chicago-Naperville, IL-IN-WI", 0.3086, 0 ],
+  [ "Cincinnati-Wilmington-Maysville, OH-KY-IN", 0.2193, 0 ],
+  [ "Cleveland-Akron-Canton, OH", 0.2223, 0 ],
+  [ "Colorado Springs, CO", 0.2015, 0 ],
+  [ "Columbus-Marion-Zanesville, OH", 0.2215, 0 ],
+  [ "Corpus Christi-Kingsville-Alice, TX", 0.1763, 0 ],
+  [ "Dallas-Fort Worth, TX-OK", 0.2726, 0 ],
+  [ "Davenport-Moline, IA-IL", 0.1893, 0 ],
+  [ "Dayton-Springfield-Kettering, OH", 0.2142, 0 ],
+  [ "Denver-Aurora, CO", 0.3052, 0 ],
+  [ "Des Moines-Ames-West Des Moines, IA", 0.1801, 0 ],
+  [ "Detroit-Warren-Ann Arbor, MI", 0.2912, 0 ],
+  [ "Fresno-Madera-Hanford, CA", 0.1765, 0 ],
+  [ "Harrisburg-Lebanon, PA", 0.1943, 0 ],
+  [ "Hartford-East Hartford, CT-MA", 0.3208, 0 ],
+  [ "Hawaii-Honolulu-Kauai-Maui and Kalawao", 0.2221, 0.0864 ],
+  [ "Hawaii-(County)", 0.2221, 0.0291 ],
+  [ "Houston-The Woodlands, TX", 0.35, 0 ],
+  [ "Huntsville-Decatur, AL", 0.2191, 0 ],
+  [ "Indianapolis-Carmel-Muncie, IN", 0.1815, 0 ],
+  [ "Kansas City-Overland Park-Kansas City, MO-KS", 0.1897, 0 ],
+  [ "Laredo, TX", 0.2159, 0 ],
+  [ "Las Vegas-Henderson, NV-AZ", 0.1957, 0 ],
+  [ "Los Angeles-Long Beach, CA", 0.3647, 0 ],
+  [ "Miami-Fort Lauderdale-Port St. Lucie, FL", 0.2467, 0 ],
+  [ "Milwaukee-Racine-Waukesha, WI", 0.2242, 0 ],
+  [ "Minneapolis-St. Paul, MN-WI", 0.2762, 0 ],
+  [ "New York-Newark, NY-NJ-CT-PA", 0.3795, 0 ],
+  [ "Omaha-Council Bluffs-Fremont, NE-IA", 0.1823, 0 ],
+  [ "Palm Bay-Melbourne-Titusville, FL", 0.1793, 0 ],
+  [ "Philadelphia-Reading-Camden, PA-NJ-DE-MD", 0.2899, 0 ],
+  [ "Phoenix-Mesa, AZ", 0.2245, 0 ],
+  [ "Pittsburgh-New Castle-Weirton, PA-OH-WV", 0.2103, 0 ],
+  [ "Portland-Vancouver-Salem, OR-WA", 0.2613, 0 ],
+  [ "Raleigh-Durham-Cary, NC", 0.2224, 0 ],
+  [ "Reno-Fernley, NV", 0.1752, 0 ],
+  [ "Richmond, VA", 0.2228, 0 ],
+  [ "Rochester-Batavia-Seneca Falls, NY", 0.1788, 0 ],
+  [ "Sacramento-Roseville, CA-NV", 0.2976, 0 ],
+  [ "San Antonio-New Braunfels-Pearsall, TX", 0.1878, 0 ],
+  [ "San Diego-Chula Vista-Carlsbad, CA", 0.3372, 0 ],
+  [ "San Jose-San Francisco-Oakland, CA", 0.4634, 0 ],
+  [ "Seattle-Tacoma, WA", 0.3157, 0 ],
+  [ "Spokane-Spokane Valley-Coeur d'Alene, WA-ID", 0.1767, 0 ],
+  [ "St. Louis-St. Charles-Farmington, MO-IL", 0.2003, 0 ],
+  [ "Tucson-Nogales, AZ", 0.1928, 0 ],
+  [ "Virginia Beach-Norfolk, VA-NC", 0.188, 0 ],
+  [ "Washington-Baltimore-Arlington, DC-MD-VA-WV-PA", 0.3394, 0 ],
+  [ "Puerto Rico", 0.1706, 0.0249 ],
+  [ "U.S. Virgin Islands", 0.1706, 0.1188 ],
+  [ "American Samoa", 0.1706, 0 ],
+  [ "Johnston and Sand Island", 0.1706, 0 ],
+  [ "Midway Islands", 0.1706, 0 ],
+  [ "Guam and Northern Mariana Islands", 0.1706, 0.1188 ],
+  [ "Wake Island", 0.1706, 0 ],
+];
+
+/* ============ END OF ANNUAL UPDATE AREA - do not edit below ============ */
+const P = { NOLOC: BASE_PAY, SRF: SPECIAL_FLOORS, EXEC: EXEC_CAP,
+            LOCS: LOCALITIES.map(function(x){ return {n:x[0], r:x[1], c:x[2]}; }) };
 const ROLE = { shift:{accent:'#c1272d',name:'Shift Firefighter',chief:false}, chief:{accent:'#2f5468',name:'Chief / Training / Inspector',chief:true} };
 let state = {loc:'Rest of the United States', loc2:null, role:'shift', grade:7, step:1, raise:0, view:'statement', otOverride:null, otDiv:3, taxRate:22, promoJump:1};
 
@@ -222,7 +336,7 @@ function renderStatement(){
   let pay=''; if(r.chief){ pay+=subline('Regular pay (80 hrs)',money(d.gsPay)); pay+=subline('Firefighter pay (26 hrs)',money(d.ffPay)); pay+=subline('Overtime pay (14 hrs)',money(d.otPay)); }
   else { pay+=subline('Firefighter pay (106 hrs)',money(d.ffPay)); pay+=subline('Overtime pay (38 hrs)',money(d.otPay)); }
   if(d.cola>0) pay+=subline('COLA',money(d.cola));
-  document.getElementById('panel').innerHTML='<div class="stmt"><div class="stmt-top"><div class="row1"><span class="stmt-role">'+r.name+'</span><span class="stmt-gs">GS-'+grade+' &middot; Step '+step+'</span></div><div class="annual-label">2026 annual pay</div><div class="annual">'+money(d.annual)+'</div><div class="biweekly">Per pay period (biweekly): <b>'+money(d.period)+'</b></div>'+projHtml+'</div><div class="lines">'+rates+line('Firefighter base pay','Straight-time annual, no OT premium',money(d.ffbase))+line('GS base pay','Locality-adjusted',money(d.base))+'<div class="line sub" style="border-top:1px solid #eeecea;padding-top:12px"><span class="k">Per-period breakdown</span><span class="v"></span></div>'+pay+'</div></div>';
+  document.getElementById('panel').innerHTML='<div class="stmt"><div class="stmt-top"><div class="row1"><span class="stmt-role">'+r.name+'</span><span class="stmt-gs">GS-'+grade+' &middot; Step '+step+'</span></div><div class="annual-label">'+PAY_YEAR+' annual pay</div><div class="annual">'+money(d.annual)+'</div><div class="biweekly">Per pay period (biweekly): <b>'+money(d.period)+'</b></div>'+projHtml+'</div><div class="lines">'+rates+line('Firefighter base pay','Straight-time annual, no OT premium',money(d.ffbase))+line('GS base pay','Locality-adjusted',money(d.base))+'<div class="line sub" style="border-top:1px solid #eeecea;padding-top:12px"><span class="k">Per-period breakdown</span><span class="v"></span></div>'+pay+'</div></div>';
 }
 
 function schedOT(){ const {role,grade,step}=state, L=locRec(state.loc), d=calc(role,grade,step-1,L.r,L.c); return r2(d.otPay*26); }
@@ -294,7 +408,7 @@ function renderPromo(){
       '<b>Two-step rule:</b> GS-'+grade+' Step '+step+' + 2 steps = GS-'+grade+' Step '+(bumpIdx+1)+' rate ('+money0(bumpRate)+' base)'+(capped?' <span style="color:var(--muted)">(capped at Step 10)</span>':'')+
       '. The lowest GS-'+ng+' step at or above that is <b>Step '+(nsIdx+1)+'</b>'+(jump>1?' (a '+jump+'-grade jump lands at the higher grade\u2019s lowest qualifying step)':'')+'.'+
     '</div>'+
-    '<div class="hint">Base-pay figures set the landing step; the dollar amounts above are full firefighter pay. 2026, same locality.</div>';
+    '<div class="hint">Base-pay figures set the landing step; the dollar amounts above are full firefighter pay. '+PAY_YEAR+', same locality.</div>';
   document.querySelectorAll('.segbtn').forEach(b=>{ if(b.hasAttribute('disabled')) return; b.onclick=()=>{ state.promoJump=+b.dataset.jump; renderPromo(); }; });
 }
 
@@ -310,10 +424,12 @@ function renderCompare(){
     '<div class="cmploc"><span class="label" style="display:block;margin-bottom:9px">Compare '+state.loc+' against</span><div class="selwrap"><select id="locsel2" aria-label="Comparison locality">'+opts+'</select></div></div>'+
     '<div class="cmp">'+col(state.loc,dA,aHi)+col(state.loc2,dB,!aHi)+'</div>'+
     '<div class="cmp-diff"><div class="big">'+money0(diff)+' / yr</div><div class="sm">'+hiName.split(',')[0]+' pays about '+pct.toFixed(1)+'% more &middot; GS-'+grade+' Step '+step+', '+r.name+'</div></div>'+
-    '<div class="hint">Figures are current 2026 pay. Same grade, step, and position in each area.</div>';
+    '<div class="hint">Figures are current '+PAY_YEAR+' pay. Same grade, step, and position in each area.</div>';
   document.getElementById('locsel2').onchange=e=>{ state.loc2=e.target.value; renderCompare(); };
 }
 
+document.title='Firefighter Pay '+PAY_YEAR;
+document.querySelectorAll('.yr').forEach(function(e){ e.textContent=PAY_YEAR; });
 sync();
 
 </script>
