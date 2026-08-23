@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Firefighter Pay 2026 - Version 1.172</title>
+<title>Firefighter Pay 2026 - Version 1.173</title>
 <meta name="theme-color" content="#1b1a19">
 <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='96' fill='%231b1a19'/><path d='M256 96c22 44 6 70-18 92-30 28-52 55-52 100a122 122 0 0 0 244 0c0-30-12-52-30-72-6 26-20 36-32 40 14-40-4-78-40-104-20-14-28-34-22-56z' fill='%23c1272d'/><text x='256' y='430' font-family='Arial,sans-serif' font-size='90' font-weight='700' fill='%23ffffff' text-anchor='middle'>FF</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -101,7 +101,7 @@
 
   <header>
     <span class="eyebrow">Federal Pay Program</span>
-	<h1>Firefighter Pay<br>2026<br><small><small><small>Version 1.172</small></small></small></h1>
+	<h1>Firefighter Pay<br>2026<br><small><small><small>Version 1.173</small></small></small></h1>
     <div class="locality"><span class="dot"></span><span>Locality: <b id="loclabel">Rest of the United States</b></span></div>
   </header>
 
@@ -268,7 +268,7 @@ const LOCALITIES = [
 const P = { NOLOC: BASE_PAY, SRF: SPECIAL_FLOORS, EXEC: EXEC_CAP,
             LOCS: LOCALITIES.map(function(x){ return {n:x[0], r:x[1], c:x[2]}; }) };
 const ROLE = { shift:{accent:'#c1272d',name:'Shift Firefighter',chief:false}, chief:{accent:'#2f5468',name:'Chief / Training / Inspector',chief:true} };
-let state = {loc:'Rest of the United States', loc2:null, role:'shift', grade:7, step:1, raise:0, view:'statement', otOverride:null, otDiv:3, taxRate:22, promoJump:1};
+let state = {loc:'Rest of the United States', loc2:null, role:'shift', grade:7, step:1, raise:0, view:'statement', otOverride:null, otDiv:3, taxRate:22, promoJump:1, filing:'single'};
 
 const money = n => '$' + Number(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 const money0 = n => '$' + Number(Math.round(n)).toLocaleString('en-US');
@@ -352,13 +352,15 @@ function renderTax(){
   const {grade,step}=state;
   const otVal = state.otOverride!=null ? state.otOverride : schedOT();
   const seg=(dv,lbl)=>'<button class="segbtn'+(state.otDiv===dv?' on':'')+'" data-div="'+dv+'">'+lbl+'</button>';
+  const fil=(f,lbl)=>'<button class="segbtn'+(state.filing===f?' on':'')+'" data-fil="'+f+'">'+lbl+'</button>';
   const brk=[12,22,24,32].map(rt=>'<button class="chip" data-rate="'+rt+'" aria-pressed="'+(state.taxRate===rt)+'">'+rt+'%</button>').join('');
   document.getElementById('panel').innerHTML=
     '<div class="txnote">Under the 2025 <b>One Big Beautiful Bill Act</b>, the premium half of FLSA overtime is deductible. For time-and-a-half pay that is your total overtime &divide; 3 (IRS Notice 25-69).</div>'+
     '<div class="txlabel">Total annual overtime pay</div>'+
     '<div class="taxin"><span>$</span><input id="otin" type="number" min="0" step="1" value="'+Math.round(otVal)+'" inputmode="decimal" aria-label="Total annual overtime pay"></div>'+
     '<div class="txsub">Pre-filled with the built-in overtime for GS-'+grade+' Step '+step+'. Replace it with the actual total from your pay stubs or W-2 for a precise number. <a id="otreset" style="color:var(--accent);cursor:pointer;text-decoration:underline">Reset to estimate</a></div>'+
-    '<div class="txlabel">Overtime rate</div><div class="segwrap">'+seg(3,'Time-and-a-half (&divide;3)')+seg(4,'Double-time (&divide;4)')+'</div>'+
+    '<div class="txlabel">Overtime rate</div><div class="segwrap" id="otseg">'+seg(3,'Time-and-a-half (&divide;3)')+seg(4,'Double-time (&divide;4)')+'</div>'+
+    '<div class="txlabel">Filing status</div><div class="segwrap" id="filseg">'+fil('single','Single')+fil('mfj','Married (joint)')+'</div>'+
     '<div class="txlabel">Your federal tax bracket</div><div class="chips" id="brk">'+brk+'</div>'+
     '<div id="taxout"></div>'+
     '<div class="txlimits"><b>Key limits (OBBBA):</b> up to $12,500 per person ($25,000 married filing jointly); phases out above $150k MAGI ($300k joint); FLSA non-exempt only; married filers must file jointly; applies to tax years 2025&ndash;2028.</div>'+
@@ -366,17 +368,20 @@ function renderTax(){
   const otin=document.getElementById('otin');
   otin.oninput=e=>{ const v=parseFloat(e.target.value); state.otOverride=isNaN(v)?0:Math.max(0,v); updateTaxOut(); };
   document.getElementById('otreset').onclick=()=>{ state.otOverride=null; renderTax(); };
-  document.querySelectorAll('.segbtn').forEach(b=>b.onclick=()=>{ state.otDiv=+b.dataset.div; document.querySelectorAll('.segbtn').forEach(x=>x.classList.toggle('on',x===b)); updateTaxOut(); });
+  document.querySelectorAll('#otseg .segbtn').forEach(b=>b.onclick=()=>{ state.otDiv=+b.dataset.div; document.querySelectorAll('#otseg .segbtn').forEach(x=>x.classList.toggle('on',x===b)); updateTaxOut(); });
+  document.querySelectorAll('#filseg .segbtn').forEach(b=>b.onclick=()=>{ state.filing=b.dataset.fil; document.querySelectorAll('#filseg .segbtn').forEach(x=>x.classList.toggle('on',x===b)); updateTaxOut(); });
   document.querySelectorAll('#brk .chip').forEach(c=>c.onclick=()=>{ state.taxRate=+c.dataset.rate; document.querySelectorAll('#brk .chip').forEach(x=>x.setAttribute('aria-pressed',x===c)); updateTaxOut(); });
   updateTaxOut();
 }
 function updateTaxOut(){
   const out=document.getElementById('taxout'); if(!out) return;
   const ot = state.otOverride!=null ? state.otOverride : schedOT();
+  const cap = state.filing==='mfj' ? 25000 : 12500;
   const div=state.otDiv; let ded=ot/div, capped=false;
-  if(ded>12500){ ded=12500; capped=true; }
+  if(ded>cap){ ded=cap; capped=true; }
   const nonded=ot-ded, savings=ded*state.taxRate/100;
-  const capNote=capped?'<div class="proj-note">Capped at the $12,500 per-person maximum &mdash; your overtime premium exceeds the cap.</div>':'';
+  const capLbl = state.filing==='mfj' ? '$25,000 married-filing-jointly' : '$12,500 per-person';
+  const capNote=capped?'<div class="proj-note">Capped at the '+capLbl+' maximum &mdash; your overtime premium exceeds the cap.</div>':'';
   out.innerHTML=
     '<div class="proj"><div class="proj-label">Qualified overtime deduction</div>'+
     '<div class="proj-annual">'+money0(ded)+'</div>'+
@@ -435,7 +440,7 @@ function renderCompare(){
   document.getElementById('locsel2').onchange=e=>{ state.loc2=e.target.value; renderCompare(); };
 }
 
-document.title='Firefighter Pay '+PAY_YEAR+' - Version 1.172';
+document.title='Firefighter Pay '+PAY_YEAR+' - Version 1.173';
 document.querySelectorAll('.yr').forEach(function(e){ e.textContent=PAY_YEAR; });
 sync();
 
