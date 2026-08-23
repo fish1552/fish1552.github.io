@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Firefighter Pay 2026 v 1.171</title>
+<title>Firefighter Pay 2026 - Version 1.172</title>
 <meta name="theme-color" content="#1b1a19">
 <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='96' fill='%231b1a19'/><path d='M256 96c22 44 6 70-18 92-30 28-52 55-52 100a122 122 0 0 0 244 0c0-30-12-52-30-72-6 26-20 36-32 40 14-40-4-78-40-104-20-14-28-34-22-56z' fill='%23c1272d'/><text x='256' y='430' font-family='Arial,sans-serif' font-size='90' font-weight='700' fill='%23ffffff' text-anchor='middle'>FF</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -92,6 +92,8 @@
   .segbtn:disabled{opacity:.4;cursor:not-allowed}
   .txlimits{font-size:11.5px;color:#413f3c;background:#fff7e6;border:1px solid #f0dcae;border-radius:10px;padding:11px 13px;margin-top:16px;line-height:1.55} .txlimits b{color:var(--ink)}
   .disc{font-size:11px;color:var(--muted);margin-top:12px;line-height:1.5}
+  .tabguide{margin-top:20px;font-size:12px;line-height:1.65;color:var(--muted)}
+  .tabguide b{color:var(--ink);font-weight:600}
   @media (prefers-reduced-motion:reduce){*{transition:none !important}}
 </style>
 </head>
@@ -99,9 +101,14 @@
 
   <header>
     <span class="eyebrow">Federal Pay Program</span>
-	<h1>Firefighter Pay<br>2026<br><small><small><small>Version 1.171</small></small></small></h1>
+	<h1>Firefighter Pay<br>2026<br><small><small><small>Version 1.172</small></small></small></h1>
     <div class="locality"><span class="dot"></span><span>Locality: <b id="loclabel">Rest of the United States</b></span></div>
   </header>
+
+  <div class="tabguide">
+    Pick a view below &mdash; the result shows further down the page:<br>
+    <b>Statement</b> your full pay breakdown &middot; <b>Promotion</b> the raise from moving up a grade (two-step rule) &middot; <b>OT Tax</b> your overtime tax deduction &middot; <b>Compare</b> two localities side by side
+  </div>
 
   <div class="tabs" role="tablist">
     <button class="tab" data-view="statement" role="tab" aria-selected="true">Statement</button>
@@ -428,7 +435,7 @@ function renderCompare(){
   document.getElementById('locsel2').onchange=e=>{ state.loc2=e.target.value; renderCompare(); };
 }
 
-document.title='Firefighter Pay '+PAY_YEAR;
+document.title='Firefighter Pay '+PAY_YEAR+' - Version 1.172';
 document.querySelectorAll('.yr').forEach(function(e){ e.textContent=PAY_YEAR; });
 sync();
 
