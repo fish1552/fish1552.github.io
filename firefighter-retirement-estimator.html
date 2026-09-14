@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Firefighter Retirement Estimator v0.2</title>
+<style>
+  :root{
+    --red:#8b1a1a;
+    --red-dark:#6d1414;
+    --ink:#1c1c1c;
+    --muted:#5b5b5b;
+    --line:#e2e2e2;
+    --bg:#f6f6f4;
+    --card:#ffffff;
+    --good:#1f7a3d;
+    --warn:#a15c00;
+    --accent-bg:#fbeeee;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.45;
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:680px;margin:0 auto;padding:16px 14px 60px;}
+  header{
+    background:var(--red);
+    color:#fff;
+    border-radius:12px;
+    padding:18px 18px 16px;
+    margin-bottom:14px;
+  }
+  header h1{margin:0;font-size:1.35rem;letter-spacing:.2px;}
+  header .sub{margin-top:4px;font-size:.86rem;opacity:.92;}
+  header .ver{margin-top:8px;font-size:.72rem;opacity:.8;}
+  .banner{
+    background:#fff8e1;
+    border:1px solid #f0dfa8;
+    color:#7a5b00;
+    border-radius:10px;
+    padding:10px 12px;
+    font-size:.82rem;
+    margin-bottom:14px;
+  }
+  .explain{
+    font-size:.85rem;
+    color:var(--muted);
+    margin-bottom:16px;
+  }
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:14px 14px 12px;
+    margin-bottom:14px;
+  }
+  .card h2{
+    margin:0 0 10px;
+    font-size:1rem;
+    color:var(--red-dark);
+    display:flex;align-items:center;gap:8px;
+  }
+  .card h2 .n{
+    background:var(--red);color:#fff;border-radius:50%;
+    width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;
+    font-size:.75rem;flex:0 0 auto;
+  }
+  label{display:block;font-size:.85rem;color:var(--muted);margin:10px 0 4px;}
+  .hint{font-size:.75rem;color:var(--muted);margin-top:3px;}
+  input[type=number],select{
+    width:100%;padding:10px 11px;font-size:1rem;
+    border:1px solid #cfcfcf;border-radius:8px;background:#fff;color:var(--ink);
+    -moz-appearance:textfield;
+  }
+  input:focus,select:focus{outline:2px solid var(--red);outline-offset:0;border-color:var(--red);}
+  .row{display:flex;gap:10px;flex-wrap:wrap;}
+  .row>div{flex:1 1 140px;min-width:0;}
+  .seg{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px;}
+  .seg label{
+    flex:1 1 auto;margin:0;text-align:center;cursor:pointer;
+    border:1px solid #cfcfcf;border-radius:8px;padding:8px 6px;font-size:.82rem;color:var(--ink);
+    background:#fff;transition:.12s;
+  }
+  .seg input{position:absolute;opacity:0;pointer-events:none;}
+  .seg input:checked + span{font-weight:600;}
+  .seg label:has(input:checked){background:var(--accent-bg);border-color:var(--red);color:var(--red-dark);}
+  .hide{display:none;}
+  details.assume summary{
+    cursor:pointer;font-weight:600;color:var(--red-dark);font-size:1rem;list-style:none;
+    display:flex;align-items:center;gap:8px;
+  }
+  details.assume summary::-webkit-details-marker{display:none;}
+  details.assume summary .chev{transition:.15s;}
+  details.assume[open] summary .chev{transform:rotate(90deg);}
+
+  /* Results */
+  .results{
+    background:var(--red-dark);color:#fff;border-radius:12px;padding:16px 16px 14px;
+    position:sticky;bottom:0;
+  }
+  .results h2{color:#fff;margin:0 0 10px;font-size:1rem;}
+  .net{font-size:2.1rem;font-weight:700;line-height:1.1;margin:2px 0;}
+  .net-sub{font-size:.8rem;opacity:.85;margin-bottom:12px;}
+  .line{display:flex;justify-content:space-between;gap:10px;font-size:.9rem;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.14);}
+  .line:last-child{border-bottom:none;}
+  .line .v{font-variant-numeric:tabular-nums;font-weight:600;}
+  .line.sub{font-size:.82rem;opacity:.85;}
+  .line.minus .v{color:#ffc9c9;}
+  .badge{display:inline-block;font-size:.78rem;padding:5px 10px;border-radius:20px;margin-bottom:10px;font-weight:600;}
+  .badge.ok{background:#d6f0dd;color:#12692f;}
+  .badge.no{background:#f6d6d6;color:#8b1a1a;}
+  .foot{font-size:.78rem;color:var(--muted);margin-top:16px;padding-top:12px;border-top:1px solid var(--line);}
+  .foot b{color:var(--red-dark);}
+  .high3-out{font-size:1.1rem;font-weight:700;color:var(--red-dark);margin-top:8px;}
+  .grp{background:#fafafa;border:1px solid var(--line);border-radius:8px;padding:10px;margin-top:6px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>Firefighter Retirement Estimator</h1>
+    <div class="sub">FERS Special Retirement (6c/12d) — pension + supplement + TSP + taxes → net per month</div>
+    <div class="ver">Training tool v0.2 · 2026 figures · Payscale engine v1.173</div>
+  </header>
+
+  <div class="banner">
+    <b>Training estimate only.</b> Verify every number with HR / benefits before you make any decision. This is not an SF-50 or an official OPM computation.
+  </div>
+
+  <div class="explain">
+    Fill in the boxes below and your estimated <b>net monthly check</b> updates automatically at the bottom. Start with your pay, then your service, then the choices that shrink or grow the check.
+  </div>
+
+  <!-- ============ 1. PAY / HIGH-3 ============ -->
+  <div class="card">
+    <h2><span class="n">1</span> Your pay (High-3)</h2>
+    <div class="seg" id="paymode">
+      <label><input type="radio" name="paymode" value="preset" checked><span>Firefighter preset</span></label>
+      <label><input type="radio" name="paymode" value="engine"><span>Grade / step / locality</span></label>
+      <label><input type="radio" name="paymode" value="build"><span>Build from 3 years</span></label>
+      <label><input type="radio" name="paymode" value="manual"><span>Enter High-3</span></label>
+    </div>
+
+    <div id="pm-preset">
+      <label>Position (Rest of U.S. locality)</label>
+      <select id="preset">
+        <option value="87984">GS-7/10 · 144-hr shift · High-3 $87,984</option>
+        <option value="97431">GS-8/10 · 144-hr shift · High-3 $97,431</option>
+        <option value="130204" selected>GS-11/10 · 144-hr shift · High-3 $130,204</option>
+        <option value="187692">GS-13/10 · 60-hr · High-3 $187,692</option>
+      </select>
+      <div class="hint">Baked in from the training deck's pay tables.</div>
+    </div>
+
+    <div id="pm-build" class="hide">
+      <div class="grp">
+        <div class="hint" style="margin-top:0;margin-bottom:6px;">Enter your <b>firefighter annual pay</b> for your three highest-paid years — read them straight off your Payscale tool.</div>
+        <div class="row">
+          <div><label>Year 1 pay</label><input type="number" id="y1" placeholder="86599"></div>
+          <div><label>Year 2 pay</label><input type="number" id="y2" placeholder="88246"></div>
+          <div><label>Year 3 pay</label><input type="number" id="y3" placeholder="89107"></div>
+        </div>
+        <div class="hint">High-3 here is a simple average of the three (official OPM uses a date-weighted 36 months).</div>
+      </div>
+    </div>
+
+    <div id="pm-engine" class="hide">
+      <div class="grp">
+        <label style="margin-top:0;">Locality / pay area</label>
+        <select id="eLoc"></select>
+        <label>Position</label>
+        <div class="seg" id="eRole">
+          <label><input type="radio" name="erole" value="shift" checked><span>Shift firefighter (144-hr)</span></label>
+          <label><input type="radio" name="erole" value="chief"><span>Chief / inspector (60-hr)</span></label>
+        </div>
+        <div class="row" style="margin-top:8px;">
+          <div><label style="margin-top:0;">Grade</label><select id="eGrade"></select></div>
+          <div><label style="margin-top:0;">Step</label><select id="eStep"></select></div>
+        </div>
+        <div class="hint" style="margin-top:8px;">Uses your Payscale engine (v1.173 tables) to compute 2026 firefighter base pay, then back-casts two years into a High-3.</div>
+        <div class="row" style="margin-top:4px;">
+          <div><label style="margin-top:0;">Est. 2025→2026 raise (%)</label><input type="number" id="eR26" value="1.0" step="0.1"></div>
+          <div><label style="margin-top:0;">Est. 2024→2025 raise (%)</label><input type="number" id="eR25" value="1.9" step="0.1"></div>
+        </div>
+        <div class="hint" id="eOut" style="margin-top:8px;color:var(--red-dark);"></div>
+      </div>
+    </div>
+
+    <div id="pm-manual" class="hide">
+      <label>High-3 average salary ($/yr)</label>
+      <input type="number" id="manualHigh3" placeholder="130204">
+    </div>
+
+    <div class="high3-out">High-3 used: <span id="high3disp">$130,204</span></div>
+  </div>
+
+  <!-- ============ 2. SERVICE ============ -->
+  <div class="card">
+    <h2><span class="n">2</span> Your service</h2>
+    <div class="row">
+      <div>
+        <label>Covered 0081 firefighter years</label>
+        <input type="number" id="covered" value="25" min="0" step="0.5">
+        <div class="hint">The special-retirement clock. First 20 pay 1.7%/yr.</div>
+      </div>
+      <div>
+        <label>Age at retirement</label>
+        <input type="number" id="age" value="52" min="30" step="1">
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label>Extra FERS civilian years</label>
+        <input type="number" id="extraCiv" value="0" min="0" step="0.5">
+        <div class="hint">Non-covered federal time. +1%/yr. Counts for supplement.</div>
+      </div>
+      <div>
+        <label>Military buyback years</label>
+        <input type="number" id="military" value="0" min="0" step="0.5">
+        <div class="hint">+1%/yr, but <b>not</b> counted in the supplement.</div>
+      </div>
+    </div>
+    <label>Unused sick leave (hours)</label>
+    <input type="number" id="sick" value="0" min="0" step="1">
+    <div class="hint">Raises the pension amount only (÷2087 ≈ years). Not for eligibility or supplement.</div>
+    <div id="eligBadge" style="margin-top:12px;"></div>
+  </div>
+
+  <!-- ============ 3. SURVIVOR ============ -->
+  <div class="card">
+    <h2><span class="n">3</span> Survivor election</h2>
+    <div class="seg" id="survivor">
+      <label><input type="radio" name="surv" value="0.10" checked><span>Full · −10% (spouse 50%)</span></label>
+      <label><input type="radio" name="surv" value="0.05"><span>Partial · −5% (spouse 25%)</span></label>
+      <label><input type="radio" name="surv" value="0"><span>None · −0%</span></label>
+    </div>
+    <div class="hint">The reduction comes off your pension before taxes.</div>
+  </div>
+
+  <!-- ============ 4. SUPPLEMENT ============ -->
+  <div class="card">
+    <h2><span class="n">4</span> FERS supplement (bridge to 62)</h2>
+    <label>Your SSA age-62 estimate ($/mo)</label>
+    <input type="number" id="ssa" value="2600" min="0" step="1">
+    <div class="hint">From SSA.gov. Supplement = (this ÷ 40) × FERS civilian years. Stops at 62.</div>
+    <label style="margin-top:12px;"><input type="checkbox" id="getSupp" checked style="width:auto;margin-right:6px;vertical-align:middle;">Receiving supplement (retiring before 62)</label>
+  </div>
+
+  <!-- ============ 5. TSP ============ -->
+  <div class="card">
+    <h2><span class="n">5</span> TSP withdrawals</h2>
+    <div class="row">
+      <div>
+        <label>Traditional balance ($)</label>
+        <input type="number" id="tradBal" value="600000" min="0" step="1000">
+      </div>
+      <div>
+        <label>Withdrawal rate (%/yr)</label>
+        <input type="number" id="tradRate" value="4" min="0" step="0.1">
+      </div>
+    </div>
+    <div class="hint">Traditional is taxable when withdrawn.</div>
+    <div class="row" style="margin-top:6px;">
+      <div>
+        <label>Roth balance ($) — optional</label>
+        <input type="number" id="rothBal" value="0" min="0" step="1000">
+      </div>
+      <div>
+        <label>Withdrawal rate (%/yr)</label>
+        <input type="number" id="rothRate" value="4" min="0" step="0.1">
+      </div>
+    </div>
+    <div class="hint">Qualified Roth withdrawals are tax-free — added to net without tax.</div>
+  </div>
+
+  <!-- ============ 6. ASSUMPTIONS ============ -->
+  <div class="card">
+    <details class="assume">
+      <summary><span class="chev">▶</span> Assumptions (edit to fit your situation)</summary>
+      <label style="margin-top:12px;">Filing status</label>
+      <div class="seg" id="filing">
+        <label><input type="radio" name="filing" value="mfj" checked><span>Married filing jointly</span></label>
+        <label><input type="radio" name="filing" value="single"><span>Single</span></label>
+      </div>
+      <div class="row" style="margin-top:8px;">
+        <div>
+          <label>Federal standard deduction ($)</label>
+          <input type="number" id="fedStd" value="32200" step="50">
+        </div>
+        <div>
+          <label>FEHB premium ($/mo)</label>
+          <input type="number" id="fehb" value="500" step="10">
+        </div>
+      </div>
+      <div class="row" style="margin-top:8px;">
+        <div>
+          <label>Georgia tax rate (%)</label>
+          <input type="number" id="gaRate" value="4.99" step="0.01">
+        </div>
+        <div>
+          <label>Georgia standard deduction ($)</label>
+          <input type="number" id="gaStd" value="30000" step="50">
+        </div>
+      </div>
+      <div class="hint">Pre-filled with the 2026 figures used in the training deck. Georgia's 2026 standard deduction is $30,000 for married filing jointly ($15,000 single) at a flat 4.99% rate; the federal brackets and $32,200 standard deduction are the 2026 IRS tables. Edit any field to fit your own situation.</div>
+    </details>
+  </div>
+
+  <!-- ============ RESULTS ============ -->
+  <div class="results" id="results">
+    <div id="netBadge"></div>
+    <h2>Estimated net check</h2>
+    <div class="net" id="netMo">$0</div>
+    <div class="net-sub" id="netYr">per month · $0 / year</div>
+
+    <div class="line"><span>Pension % of High-3</span><span class="v" id="rPct">0%</span></div>
+    <div class="line"><span>Pension (self, unreduced)</span><span class="v" id="rPension">$0/mo</span></div>
+    <div class="line sub minus"><span>Survivor reduction</span><span class="v" id="rSurv">−$0/mo</span></div>
+    <div class="line"><span>Pension after survivor</span><span class="v" id="rAfter">$0/mo</span></div>
+    <div class="line"><span>+ FERS supplement</span><span class="v" id="rSupp">$0/mo</span></div>
+    <div class="line"><span>+ TSP withdrawal</span><span class="v" id="rTsp">$0/mo</span></div>
+    <div class="line"><span>= Gross monthly</span><span class="v" id="rGross">$0/mo</span></div>
+    <div class="line sub minus"><span>− Federal tax</span><span class="v" id="rFed">−$0/mo</span></div>
+    <div class="line sub minus"><span>− Georgia tax</span><span class="v" id="rGa">−$0/mo</span></div>
+    <div class="line sub minus"><span>− FEHB premium</span><span class="v" id="rFehb">−$0/mo</span></div>
+  </div>
+
+  <div class="foot">
+    <b>Firefighter-proof rule:</b> don't ask "what's my pension?" — ask what hits the bank after survivor election, FEHB, federal tax, Georgia tax, and TSP. This tool follows the training deck's formulas and 2026 figures. It does not model pension basis recovery or the public-safety-officer health-premium exclusion.
+  </div>
+
+</div>
+
+<script>
+/* ============================================================
+   EDITABLE DATA BLOCK — safe to update each year.
+   The calculation engine below this block is left unchanged.
+   ============================================================ */
+
+// 2026 federal brackets: [income where the rate starts, rate]. Applied to taxable income (after standard deduction).
+const FED_BRACKETS = {
+  mfj: [[0,0.10],[24800,0.12],[100800,0.22],[211400,0.24],[403550,0.32],[512450,0.35],[768700,0.37]],
+  single: [[0,0.10],[12400,0.12],[50400,0.22],[105700,0.24],[201775,0.32],[256225,0.35],[640600,0.37]]
+};
+// Default federal standard deduction by filing status (2026)
+const FED_STD = { mfj:32200, single:16100 };
+// Hours of unused sick leave that equal one year of service credit
+const SICK_HOURS_PER_YEAR = 2087;
+
+/* ------------------------------------------------------------
+   PAYSCALE ENGINE — lifted from Firefighter Pay v1.173.
+   To update: paste the same BASE_PAY / LOCALITIES numbers you
+   use in the pay tool. The math below is unchanged from it.
+   ------------------------------------------------------------ */
+const EXEC_CAP = 197200;
+const BASE_PAY = {
+   3: [27708,28632,29556,30480,31404,32328,33252,34176,35100,36024],
+   4: [31103,32140,33177,34214,35251,36288,37325,38362,39399,40436],
+   5: [34799,35959,37119,38279,39439,40599,41759,42919,44079,45239],
+   6: [38791,40084,41377,42670,43963,45256,46549,47842,49135,50428],
+   7: [43106,44543,45980,47417,48854,50291,51728,53165,54602,56039],
+   8: [47738,49329,50920,52511,54102,55693,57284,58875,60466,62057],
+   9: [52727,54485,56243,58001,59759,61517,63275,65033,66791,68549],
+  10: [58064,59999,61934,63869,65804,67739,69674,71609,73544,75479],
+  11: [63795,65922,68049,70176,72303,74430,76557,78684,80811,82938],
+  12: [76463,79012,81561,84110,86659,89208,91757,94306,96855,99404],
+  13: [90925,93956,96987,100018,103049,106080,109111,112142,115173,118204],
+  14: [107446,111028,114610,118192,121774,125356,128938,132520,136102,139684]
+};
+const SPECIAL_FLOORS = {
+   3: [36464,37388,38312,39236,40160,41084,42008,42932,43856,44780],
+   4: [37193,38230,39267,40304,41341,0,0,0,0,0]
+};
+const LOCALITIES = [
+  ["Rest of the United States",0.1706],
+  ["Alaska-Anchorage-Fairbanks-Juneau",0.3236],
+  ["Alaska-Rest of Alaska",0.3236],
+  ["Alaska-Clear SFS-Special Rates",0.3236],
+  ["Albany-Schenectady, NY-MA",0.2077],
+  ["Albuquerque-Santa Fe-Las Vegas, NM",0.1833],
+  ["Atlanta-Athens-Clarke County-Sandy Springs, GA-AL",0.2379],
+  ["Austin-Round Rock-Georgetown, TX",0.2035],
+  ["Birmingham-Hoover-Talladega, AL",0.1824],
+  ["Boston-Worcester-Providence, MA-RI-NH-ME",0.3258],
+  ["Buffalo-Cheektowaga-Olean, NY",0.2241],
+  ["Burlington-South Burlington-Barre, VT",0.1945],
+  ["Charlotte-Concord, NC-SC",0.1967],
+  ["Chicago-Naperville, IL-IN-WI",0.3086],
+  ["Cincinnati-Wilmington-Maysville, OH-KY-IN",0.2193],
+  ["Cleveland-Akron-Canton, OH",0.2223],
+  ["Colorado Springs, CO",0.2015],
+  ["Columbus-Marion-Zanesville, OH",0.2215],
+  ["Corpus Christi-Kingsville-Alice, TX",0.1763],
+  ["Dallas-Fort Worth, TX-OK",0.2726],
+  ["Davenport-Moline, IA-IL",0.1893],
+  ["Dayton-Springfield-Kettering, OH",0.2142],
+  ["Denver-Aurora, CO",0.3052],
+  ["Des Moines-Ames-West Des Moines, IA",0.1801],
+  ["Detroit-Warren-Ann Arbor, MI",0.2912],
+  ["Fresno-Madera-Hanford, CA",0.1765],
+  ["Harrisburg-Lebanon, PA",0.1943],
+  ["Hartford-East Hartford, CT-MA",0.3208],
+  ["Hawaii-Honolulu-Kauai-Maui and Kalawao",0.2221],
+  ["Hawaii-(County)",0.2221],
+  ["Houston-The Woodlands, TX",0.35],
+  ["Huntsville-Decatur, AL",0.2191],
+  ["Indianapolis-Carmel-Muncie, IN",0.1815],
+  ["Kansas City-Overland Park-Kansas City, MO-KS",0.1897],
+  ["Laredo, TX",0.2159],
+  ["Las Vegas-Henderson, NV-AZ",0.1957],
+  ["Los Angeles-Long Beach, CA",0.3647],
+  ["Miami-Fort Lauderdale-Port St. Lucie, FL",0.2467],
+  ["Milwaukee-Racine-Waukesha, WI",0.2242],
+  ["Minneapolis-St. Paul, MN-WI",0.2762],
+  ["New York-Newark, NY-NJ-CT-PA",0.3795],
+  ["Omaha-Council Bluffs-Fremont, NE-IA",0.1823],
+  ["Palm Bay-Melbourne-Titusville, FL",0.1793],
+  ["Philadelphia-Reading-Camden, PA-NJ-DE-MD",0.2899],
+  ["Phoenix-Mesa, AZ",0.2245],
+  ["Pittsburgh-New Castle-Weirton, PA-OH-WV",0.2103],
+  ["Portland-Vancouver-Salem, OR-WA",0.2613],
+  ["Raleigh-Durham-Cary, NC",0.2224],
+  ["Reno-Fernley, NV",0.1752],
+  ["Richmond, VA",0.2228],
+  ["Rochester-Batavia-Seneca Falls, NY",0.1788],
+  ["Sacramento-Roseville, CA-NV",0.2976],
+  ["San Antonio-New Braunfels-Pearsall, TX",0.1878],
+  ["San Diego-Chula Vista-Carlsbad, CA",0.3372],
+  ["San Jose-San Francisco-Oakland, CA",0.4634],
+  ["Seattle-Tacoma, WA",0.3157],
+  ["Spokane-Spokane Valley-Coeur d'Alene, WA-ID",0.1767],
+  ["St. Louis-St. Charles-Farmington, MO-IL",0.2003],
+  ["Tucson-Nogales, AZ",0.1928],
+  ["Virginia Beach-Norfolk, VA-NC",0.188],
+  ["Washington-Baltimore-Arlington, DC-MD-VA-WV-PA",0.3394],
+  ["Puerto Rico",0.1706],
+  ["U.S. Virgin Islands",0.1706],
+  ["American Samoa",0.1706],
+  ["Johnston and Sand Island",0.1706],
+  ["Midway Islands",0.1706],
+  ["Guam and Northern Mariana Islands",0.1706],
+  ["Wake Island",0.1706]
+];
+const PS = { LOCS: LOCALITIES.map(x => ({n:x[0], r:x[1]})) };
+const ps_r2 = x => Math.round((x + 1e-9) * 100) / 100;
+const ps_r0 = x => Math.round(x + 1e-9);
+function ps_gsBase(g, s, rate){
+  const NL = BASE_PAY[String(g)][s];
+  const LA = ps_r0(NL * (1 + rate));
+  if(g===3 || g===4){ const fl = (SPECIAL_FLOORS[String(g)] || [])[s] || 0; return Math.max(LA, fl); }
+  if(g===13 || g===14){ return Math.min(LA, EXEC_CAP); }
+  return LA;
+}
+// Firefighter straight-time base pay (no OT premium) — the High-3 building block.
+function ps_ffbase(role, g, s, rate){
+  const base = ps_gsBase(g, s, rate), ff = ps_r2(base / 2756);
+  if(role === 'shift') return ps_r2(ff * 144 * 26);
+  const gsr = ps_r2(base / 2087);
+  return ps_r2((gsr * 80 + ff * 40) * 26);
+}
+
+/* ============================================================
+   CALCULATION ENGINE — leave unchanged for low-risk updates.
+   ============================================================ */
+
+function money(n){ return '$' + Math.round(n).toLocaleString('en-US'); }
+function num(id){ const v = parseFloat(document.getElementById(id).value); return isNaN(v) ? 0 : v; }
+function radio(name){ const el = document.querySelector('input[name="'+name+'"]:checked'); return el ? el.value : null; }
+
+function fedTax(taxable, status){
+  const b = FED_BRACKETS[status] || FED_BRACKETS.mfj;
+  let tax = 0;
+  for(let i=0;i<b.length;i++){
+    const lower = b[i][0], rate = b[i][1];
+    const upper = (i+1 < b.length) ? b[i+1][0] : Infinity;
+    if(taxable > lower){ tax += (Math.min(taxable, upper) - lower) * rate; }
+    else break;
+  }
+  return tax;
+}
+
+function getHigh3(){
+  const mode = radio('paymode');
+  if(mode === 'preset') return parseFloat(document.getElementById('preset').value) || 0;
+  if(mode === 'manual') return num('manualHigh3');
+  if(mode === 'engine') return engineHigh3();
+  // build from 3 years
+  const yrs = [num('y1'), num('y2'), num('y3')].filter(v => v > 0);
+  if(yrs.length === 0) return 0;
+  return yrs.reduce((a,b)=>a+b,0) / yrs.length;
+}
+
+// Payscale engine → 2026 base pay, back-cast two years into a High-3.
+function engineHigh3(){
+  const rec  = PS.LOCS.find(l => l.n === document.getElementById('eLoc').value) || PS.LOCS[0];
+  const role = radio('erole');
+  const g    = parseInt(document.getElementById('eGrade').value, 10);
+  const step = parseInt(document.getElementById('eStep').value, 10);
+  const p26  = ps_ffbase(role, g, step - 1, rec.r);
+  const p25  = p26 / (1 + num('eR26')/100);
+  const p24  = p25 / (1 + num('eR25')/100);
+  const high3 = (p26 + p25 + p24) / 3;
+  const out = document.getElementById('eOut');
+  if(out) out.innerHTML = '2026 base pay <b>' + money(p26) + '</b> → High-3 <b>' + money(high3) +
+    '</b><br>avg of ' + money(p24) + ' / ' + money(p25) + ' / ' + money(p26);
+  return high3;
+}
+
+function compute(){
+  // ---- inputs ----
+  const high3   = getHigh3();
+  const covered = num('covered');
+  const age     = num('age');
+  const extraCiv= num('extraCiv');
+  const military= num('military');
+  const sickYrs = num('sick') / SICK_HOURS_PER_YEAR;
+  const survRed = parseFloat(radio('surv')) || 0;
+  const ssa     = num('ssa');
+  let   getSupp = document.getElementById('getSupp').checked;
+  const tradAnn = num('tradBal') * num('tradRate')/100;
+  const rothAnn = num('rothBal') * num('rothRate')/100;
+  const status  = radio('filing');
+  const fedStd  = num('fedStd');
+  const gaRate  = num('gaRate')/100;
+  const gaStd   = num('gaStd');
+  const fehbMo  = num('fehb');
+
+  // ---- pension % : first 20 covered @1.7%, everything else @1% ----
+  const firstTwenty  = Math.min(covered, 20);
+  const coveredAbove = Math.max(covered - 20, 0);
+  const otherCred    = coveredAbove + extraCiv + military + sickYrs;
+  const pct          = firstTwenty*0.017 + otherCred*0.01;
+
+  const pensionSelfAnnual = high3 * pct;
+  const afterSurvAnnual   = pensionSelfAnnual * (1 - survRed);
+  const survivorCutAnnual = pensionSelfAnnual * survRed;
+
+  // ---- supplement: FERS civilian years only (covered + extra civilian), stops at 62 ----
+  if(age >= 62) getSupp = false;
+  const suppYears   = covered + extraCiv;
+  const suppMonthly = getSupp ? (ssa/40) * suppYears : 0;
+  const suppAnnual  = suppMonthly * 12;
+
+  // ---- taxable income (Roth is tax-free, added later) ----
+  const taxable   = afterSurvAnnual + suppAnnual + tradAnn;
+  const fedTaxable= Math.max(0, taxable - fedStd);
+  const fed       = fedTax(fedTaxable, status);
+  const gaTaxable = Math.max(0, taxable - gaStd);
+  const ga        = gaTaxable * gaRate;
+  const fehbAnnual= fehbMo * 12;
+
+  const netAnnual = taxable + rothAnn - fed - ga - fehbAnnual;
+
+  // ---- eligibility ----
+  const eligible = covered >= 25 || (covered >= 20 && age >= 50);
+
+  // ---- render ----
+  document.getElementById('high3disp').textContent = money(high3);
+  document.getElementById('rPct').textContent      = (pct*100).toFixed(1) + '%';
+  document.getElementById('rPension').textContent  = money(pensionSelfAnnual/12) + '/mo';
+  document.getElementById('rSurv').textContent     = '−' + money(survivorCutAnnual/12) + '/mo';
+  document.getElementById('rAfter').textContent    = money(afterSurvAnnual/12) + '/mo';
+  document.getElementById('rSupp').textContent     = money(suppMonthly) + '/mo';
+  document.getElementById('rTsp').textContent      = money((tradAnn+rothAnn)/12) + '/mo';
+  document.getElementById('rGross').textContent    = money((afterSurvAnnual+suppAnnual+tradAnn+rothAnn)/12) + '/mo';
+  document.getElementById('rFed').textContent      = '−' + money(fed/12) + '/mo';
+  document.getElementById('rGa').textContent       = '−' + money(ga/12) + '/mo';
+  document.getElementById('rFehb').textContent     = '−' + money(fehbAnnual/12) + '/mo';
+  document.getElementById('netMo').textContent     = money(netAnnual/12);
+  document.getElementById('netYr').textContent     = 'per month · ' + money(netAnnual) + ' / year';
+
+  const badge = document.getElementById('netBadge');
+  const eb    = document.getElementById('eligBadge');
+  if(eligible){
+    badge.innerHTML = '<span class="badge ok">Eligible for special retirement</span>';
+    eb.innerHTML    = '<span class="badge ok">✓ Eligible — 20 covered + age 50, or 25 covered any age</span>';
+  } else {
+    badge.innerHTML = '<span class="badge no">Not yet eligible</span>';
+    eb.innerHTML    = '<span class="badge no">Not yet eligible — need 20 covered + age 50, or 25 covered</span>';
+  }
+}
+
+/* ---- wire up UI ---- */
+function showPayMode(){
+  const m = radio('paymode');
+  document.getElementById('pm-preset').classList.toggle('hide', m!=='preset');
+  document.getElementById('pm-engine').classList.toggle('hide', m!=='engine');
+  document.getElementById('pm-build').classList.toggle('hide', m!=='build');
+  document.getElementById('pm-manual').classList.toggle('hide', m!=='manual');
+}
+
+// Populate the Payscale-engine controls (locality, grade, step)
+(function(){
+  const locSel = document.getElementById('eLoc');
+  PS.LOCS.forEach(l => { const o = document.createElement('option'); o.value = l.n; o.textContent = l.n; locSel.appendChild(o); });
+  const gSel = document.getElementById('eGrade');
+  for(let g=3; g<=14; g++){ const o = document.createElement('option'); o.value = g; o.textContent = 'GS-' + g; if(g===11) o.selected = true; gSel.appendChild(o); }
+  const sSel = document.getElementById('eStep');
+  for(let s=1; s<=10; s++){ const o = document.createElement('option'); o.value = s; o.textContent = 'Step ' + s; if(s===10) o.selected = true; sSel.appendChild(o); }
+  [locSel, gSel, sSel].forEach(el => el.addEventListener('change', compute));
+  document.querySelectorAll('input[name="erole"]').forEach(r => r.addEventListener('change', compute));
+})();
+document.querySelectorAll('input[name="paymode"]').forEach(r=>r.addEventListener('change', ()=>{showPayMode();compute();}));
+document.querySelectorAll('input[name="filing"]').forEach(r=>r.addEventListener('change', ()=>{
+  document.getElementById('fedStd').value = FED_STD[radio('filing')];
+  compute();
+}));
+document.querySelectorAll('input, select').forEach(el=>el.addEventListener('input', compute));
+
+document.title = 'Firefighter Retirement Estimator v0.2';
+showPayMode();
+compute();
+</script>
+</body>
+</html>
