@@ -6,8 +6,8 @@
 <title>Firefighter Retirement Estimator v0.2</title>
 <style>
   :root{
-    --red:#8b1a1a;
-    --red-dark:#6d1414;
+    --brand:#1e3a5f;
+    --brand-dark:#15304f;
     --ink:#1c1c1c;
     --muted:#5b5b5b;
     --line:#e2e2e2;
@@ -15,7 +15,7 @@
     --card:#ffffff;
     --good:#1f7a3d;
     --warn:#a15c00;
-    --accent-bg:#fbeeee;
+    --accent-bg:#e8f0fa;
   }
   *{box-sizing:border-box;}
   body{
@@ -26,9 +26,9 @@
     line-height:1.45;
     -webkit-text-size-adjust:100%;
   }
-  .wrap{max-width:680px;margin:0 auto;padding:16px 14px 60px;}
+  .wrap{max-width:680px;margin:0 auto;padding:16px 14px 92px;}
   header{
-    background:var(--red);
+    background:var(--brand);
     color:#fff;
     border-radius:12px;
     padding:18px 18px 16px;
@@ -61,11 +61,11 @@
   .card h2{
     margin:0 0 10px;
     font-size:1rem;
-    color:var(--red-dark);
+    color:var(--brand-dark);
     display:flex;align-items:center;gap:8px;
   }
   .card h2 .n{
-    background:var(--red);color:#fff;border-radius:50%;
+    background:var(--brand);color:#fff;border-radius:50%;
     width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;
     font-size:.75rem;flex:0 0 auto;
   }
@@ -76,7 +76,7 @@
     border:1px solid #cfcfcf;border-radius:8px;background:#fff;color:var(--ink);
     -moz-appearance:textfield;
   }
-  input:focus,select:focus{outline:2px solid var(--red);outline-offset:0;border-color:var(--red);}
+  input:focus,select:focus{outline:2px solid var(--brand);outline-offset:0;border-color:var(--brand);}
   .row{display:flex;gap:10px;flex-wrap:wrap;}
   .row>div{flex:1 1 140px;min-width:0;}
   .seg{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px;}
@@ -87,24 +87,37 @@
   }
   .seg input{position:absolute;opacity:0;pointer-events:none;}
   .seg input:checked + span{font-weight:600;}
-  .seg label:has(input:checked){background:var(--accent-bg);border-color:var(--red);color:var(--red-dark);}
+  .seg label:has(input:checked){background:var(--accent-bg);border-color:var(--brand);color:var(--brand-dark);}
   .hide{display:none;}
   details.assume summary{
-    cursor:pointer;font-weight:600;color:var(--red-dark);font-size:1rem;list-style:none;
+    cursor:pointer;font-weight:600;color:var(--brand-dark);font-size:1rem;list-style:none;
     display:flex;align-items:center;gap:8px;
   }
   details.assume summary::-webkit-details-marker{display:none;}
   details.assume summary .chev{transition:.15s;}
   details.assume[open] summary .chev{transform:rotate(90deg);}
 
-  /* Results */
+  /* Results — fixed compact bar, tap to expand */
   .results{
-    background:var(--red-dark);color:#fff;border-radius:12px;padding:16px 16px 14px;
-    position:sticky;bottom:0;
+    position:fixed;left:0;right:0;bottom:0;max-width:680px;margin:0 auto;
+    background:var(--brand-dark);color:#fff;border-radius:14px 14px 0 0;
+    box-shadow:0 -8px 24px -10px rgba(0,0,0,.4);z-index:50;
   }
-  .results h2{color:#fff;margin:0 0 10px;font-size:1rem;}
-  .net{font-size:2.1rem;font-weight:700;line-height:1.1;margin:2px 0;}
-  .net-sub{font-size:.8rem;opacity:.85;margin-bottom:12px;}
+  .result-bar{
+    width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;
+    background:none;border:0;color:#fff;cursor:pointer;text-align:left;
+    padding:12px 16px;font-family:inherit;
+  }
+  .bar-left{display:flex;flex-direction:column;gap:1px;min-width:0;}
+  .bar-label{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;opacity:.8;}
+  .net{font-size:1.5rem;font-weight:700;line-height:1.15;}
+  .bar-toggle{flex:0 0 auto;font-size:.8rem;opacity:.9;display:flex;align-items:center;gap:6px;white-space:nowrap;}
+  .bar-toggle .chev{display:inline-block;transition:transform .2s;font-size:.7rem;}
+  .results.open .bar-toggle .chev{transform:rotate(180deg);}
+  .result-detail{max-height:0;overflow:hidden;transition:max-height .28s ease;}
+  .results.open .result-detail{max-height:52vh;overflow-y:auto;}
+  .result-detail-inner{padding:2px 16px 16px;}
+  .net-sub{font-size:.85rem;opacity:.85;margin:0 0 10px;}
   .line{display:flex;justify-content:space-between;gap:10px;font-size:.9rem;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.14);}
   .line:last-child{border-bottom:none;}
   .line .v{font-variant-numeric:tabular-nums;font-weight:600;}
@@ -114,8 +127,8 @@
   .badge.ok{background:#d6f0dd;color:#12692f;}
   .badge.no{background:#f6d6d6;color:#8b1a1a;}
   .foot{font-size:.78rem;color:var(--muted);margin-top:16px;padding-top:12px;border-top:1px solid var(--line);}
-  .foot b{color:var(--red-dark);}
-  .high3-out{font-size:1.1rem;font-weight:700;color:var(--red-dark);margin-top:8px;}
+  .foot b{color:var(--brand-dark);}
+  .high3-out{font-size:1.1rem;font-weight:700;color:var(--brand-dark);margin-top:8px;}
   .grp{background:#fafafa;border:1px solid var(--line);border-radius:8px;padding:10px;margin-top:6px;}
 </style>
 </head>
@@ -187,7 +200,7 @@
           <div><label style="margin-top:0;">Est. 2025→2026 raise (%)</label><input type="number" id="eR26" value="1.0" step="0.1"></div>
           <div><label style="margin-top:0;">Est. 2024→2025 raise (%)</label><input type="number" id="eR25" value="1.9" step="0.1"></div>
         </div>
-        <div class="hint" id="eOut" style="margin-top:8px;color:var(--red-dark);"></div>
+        <div class="hint" id="eOut" style="margin-top:8px;color:var(--brand-dark);"></div>
       </div>
     </div>
 
@@ -313,21 +326,29 @@
 
   <!-- ============ RESULTS ============ -->
   <div class="results" id="results">
-    <div id="netBadge"></div>
-    <h2>Estimated net check</h2>
-    <div class="net" id="netMo">$0</div>
-    <div class="net-sub" id="netYr">per month · $0 / year</div>
-
-    <div class="line"><span>Pension % of High-3</span><span class="v" id="rPct">0%</span></div>
-    <div class="line"><span>Pension (self, unreduced)</span><span class="v" id="rPension">$0/mo</span></div>
-    <div class="line sub minus"><span>Survivor reduction</span><span class="v" id="rSurv">−$0/mo</span></div>
-    <div class="line"><span>Pension after survivor</span><span class="v" id="rAfter">$0/mo</span></div>
-    <div class="line"><span>+ FERS supplement</span><span class="v" id="rSupp">$0/mo</span></div>
-    <div class="line"><span>+ TSP withdrawal</span><span class="v" id="rTsp">$0/mo</span></div>
-    <div class="line"><span>= Gross monthly</span><span class="v" id="rGross">$0/mo</span></div>
-    <div class="line sub minus"><span>− Federal tax</span><span class="v" id="rFed">−$0/mo</span></div>
-    <div class="line sub minus"><span>− Georgia tax</span><span class="v" id="rGa">−$0/mo</span></div>
-    <div class="line sub minus"><span>− FEHB premium</span><span class="v" id="rFehb">−$0/mo</span></div>
+    <button class="result-bar" id="resultBar" type="button" aria-expanded="false" aria-controls="resultDetail">
+      <span class="bar-left">
+        <span class="bar-label">Estimated net check</span>
+        <span><span class="net" id="netMo">$0</span> <span style="font-size:.85rem;opacity:.85;">/mo</span></span>
+      </span>
+      <span class="bar-toggle">Details <span class="chev">▲</span></span>
+    </button>
+    <div class="result-detail" id="resultDetail">
+      <div class="result-detail-inner">
+        <div class="net-sub" id="netYr">$0 / year</div>
+        <div id="netBadge"></div>
+        <div class="line"><span>Pension % of High-3</span><span class="v" id="rPct">0%</span></div>
+        <div class="line"><span>Pension (self, unreduced)</span><span class="v" id="rPension">$0/mo</span></div>
+        <div class="line sub minus"><span>Survivor reduction</span><span class="v" id="rSurv">−$0/mo</span></div>
+        <div class="line"><span>Pension after survivor</span><span class="v" id="rAfter">$0/mo</span></div>
+        <div class="line"><span>+ FERS supplement</span><span class="v" id="rSupp">$0/mo</span></div>
+        <div class="line"><span>+ TSP withdrawal</span><span class="v" id="rTsp">$0/mo</span></div>
+        <div class="line"><span>= Gross monthly</span><span class="v" id="rGross">$0/mo</span></div>
+        <div class="line sub minus"><span>− Federal tax</span><span class="v" id="rFed">−$0/mo</span></div>
+        <div class="line sub minus"><span>− Georgia tax</span><span class="v" id="rGa">−$0/mo</span></div>
+        <div class="line sub minus"><span>− FEHB premium</span><span class="v" id="rFehb">−$0/mo</span></div>
+      </div>
+    </div>
   </div>
 
   <div class="foot">
@@ -572,7 +593,7 @@ function compute(){
   document.getElementById('rGa').textContent       = '−' + money(ga/12) + '/mo';
   document.getElementById('rFehb').textContent     = '−' + money(fehbAnnual/12) + '/mo';
   document.getElementById('netMo').textContent     = money(netAnnual/12);
-  document.getElementById('netYr').textContent     = 'per month · ' + money(netAnnual) + ' / year';
+  document.getElementById('netYr').textContent     = money(netAnnual) + ' / year';
 
   const badge = document.getElementById('netBadge');
   const eb    = document.getElementById('eligBadge');
@@ -613,6 +634,14 @@ document.querySelectorAll('input[name="filing"]').forEach(r=>r.addEventListener(
 document.querySelectorAll('input, select').forEach(el=>el.addEventListener('input', compute));
 
 document.title = 'Firefighter Retirement Estimator v0.2';
+
+// tap the bottom bar to show / hide the full breakdown
+const resultBar = document.getElementById('resultBar');
+resultBar.addEventListener('click', () => {
+  const open = document.getElementById('results').classList.toggle('open');
+  resultBar.setAttribute('aria-expanded', open);
+});
+
 showPayMode();
 compute();
 </script>
