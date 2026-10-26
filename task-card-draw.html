@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Firefighter Task Cards</title>
+<style>
+  /* ---------- Look and feel ---------- */
+  :root { --bg:#1b1b1d; --card:#f4f1ea; --ink:#141414; --red:#c8281e; --chip:#2d2d31; --chip-on:#c8281e; }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:16px; background:var(--bg); color:#eee;
+         font-family: "Rockwell","Roboto Slab",Georgia,serif; min-height:100vh;
+         display:flex; flex-direction:column; align-items:center; }
+  h1 { font-size:1.4rem; margin:8px 0 4px; letter-spacing:.05em; text-transform:uppercase; }
+  .sub { color:#aaa; margin:0 0 14px; font-size:.95rem; }
+ 
+  /* Topic buttons */
+  #topics { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; max-width:640px; margin-bottom:16px; }
+  .chip { background:var(--chip); color:#eee; border:1px solid #444; border-radius:999px;
+          padding:8px 14px; font-size:.95rem; cursor:pointer; font-family:inherit; }
+  .chip.on { background:var(--chip-on); border-color:var(--chip-on); color:#fff; }
+ 
+  /* The card */
+  #card { background:var(--card); color:var(--ink); width:100%; max-width:640px; min-height:260px;
+          border-radius:16px; padding:24px; display:flex; flex-direction:column; justify-content:center;
+          box-shadow:0 6px 24px rgba(0,0,0,.45); }
+  #card .meta { font-size:.85rem; color:#666; margin-bottom:12px; text-transform:uppercase; letter-spacing:.06em; }
+  #card .text { font-size:1.35rem; line-height:1.4; font-weight:700; }
+  #card.empty .text { color:#777; font-weight:400; text-align:center; }
+  .badge { display:inline-block; background:var(--red); color:#fff; border-radius:6px; padding:2px 8px; margin-left:6px; font-size:.75rem; }
+ 
+  #draw { margin-top:18px; background:var(--red); color:#fff; border:0; border-radius:12px;
+          font-size:1.3rem; padding:16px 40px; cursor:pointer; font-family:inherit; font-weight:700; }
+  #draw:active { transform:scale(.98); }
+  #count { color:#999; margin-top:12px; font-size:.9rem; }
+</style>
+</head>
+<body>
+ 
+<h1>Firefighter Task Cards</h1>
+<p class="sub">Pick a topic, then draw a card.</p>
+ 
+<div id="topics"></div>
+ 
+<div id="card" class="empty">
+  <div class="text">Tap "Draw a Card" to start.</div>
+</div>
+ 
+<button id="draw">Draw a Card</button>
+<div id="count"></div>
+ 
+<script>
+/* ---------- The cards ----------
+   To add a card: copy one line, change the number, topics, and text.
+   "topics" can hold more than one topic. "timed" is true for drills you time. */
+const cards = [
+  { n:1,  topics:["Search & Rescue"], text:"Discuss how you would complete a primary search with the number of personnel you usually have on your rig. What tools will you need? Who will have a TIC? Searching off the handline." },
+  { n:2,  topics:["Equipment & Hazmat"], text:"Discuss how to use the Emergency Response Guidebook." },
+  { n:3,  topics:["Equipment & Hazmat"], text:"Go over what kind of chainsaw you have on your rig. Discuss the fuel it takes, how to take it apart, and how to sharpen it. Take it apart and put it back together." },
+  { n:4,  topics:["Search & Rescue"], text:"Go over different drags to remove victims/firefighters. Include flat ground and stairs." },
+  { n:5,  topics:["Search & Rescue"], timed:true, text:"Discuss your plan for a confirmed entrapment on a residential fire. 1st floor vs. 2nd floor? Each person should know their role. Record your time for a simulated entrapment: from the time the brakes are pulled to the time you make contact with the victim." },
+  { n:6,  topics:["Buildings & Entry"], text:"Identify a hazardous building/area in your first-in district that will have challenges. Discuss these challenges and what your plan is to overcome them." },
+  { n:7,  topics:["RIT & Self-Rescue"], text:"Practice bailouts." },
+  { n:8,  topics:["Water Supply & Pumping"], text:"Go over the different color fire hydrants and their GPM." },
+  { n:9,  topics:["RIT & Self-Rescue"], text:"Discuss \"smooth, bump, bump, to the pump\" and its purpose when you become disoriented. (Smooth side = male coupling; two lugs = female side. Smooth, bump, bump means you are headed toward the pump.) Practice finding your way back to the truck." },
+  { n:10, topics:["Water Supply & Pumping"], text:"Discuss what kind of load your cross lay is. Discuss how many feet of hose you have. Discuss your nozzle type. Determine what pressure you would pump the line at." },
+  { n:11, topics:["RIT & Self-Rescue"], text:"Look over your department's RIT procedures. Go over your RIT pack and practice making the connections from the pack to your SCBA." },
+  { n:12, topics:["Search & Rescue","Ladders"], text:"Discuss how to bring an unconscious victim down a ladder. Practice it." },
+  { n:13, topics:["Equipment & Hazmat"], text:"Discuss what kind of gas monitor you have on your rig. Discuss its capabilities and what the lower explosive limit is." },
+  { n:14, topics:["RIT & Self-Rescue"], text:"Go over the use for a hasty harness. Review how to make a hasty harness." },
+  { n:15, topics:["Search & Rescue"], text:"Discuss the steps to a VEIS: Vent, Enter, Isolate, Search. What tools would you need to complete this?" },
+  { n:16, topics:["Buildings & Entry"], text:"Review the types of building construction. Identify what you have in your first due." },
+  { n:17, topics:["Buildings & Entry"], text:"Discuss gap, set, force. Force an outward-swinging door." },
+  { n:18, topics:["Water Supply & Pumping"], timed:true, text:"Practice masking up with your crew and record your times. Then deploy a cross lay to a doorway and mask up. Record this time as well. Do this each week and see if you can beat the previous week's time." },
+  { n:19, topics:["Water Supply & Pumping"], text:"Determine how much water your rig has. Discuss how long you could flow using your master stream or multiple handlines." },
+  { n:20, topics:["Water Supply & Pumping"], text:"Go over the tools in your hydrant bag. Practice dressing and wrapping the hydrant." },
+  { n:21, topics:["Size-Up & Fire Behavior"], text:"Discuss what elements are important to identify during your 360." },
+  { n:22, topics:["Ladders"], text:"Throw a 24ft extension ladder." },
+  { n:23, topics:["Hose & Fireground Ops"], text:"Practice hose line advancement. Discuss how to advance a line up a stairwell and working pinch points." },
+  { n:24, topics:["Technical Rescue"], text:"Practice a pretension back tie." },
+  { n:25, topics:["Size-Up & Fire Behavior"], text:"Review your department's size up procedures. Practice doing size ups on med calls in your first in." },
+  { n:26, topics:["RIT & Self-Rescue"], text:"Discuss what a buddy breather is, where it's located, and how to use it." },
+  { n:27, topics:["RIT & Self-Rescue"], text:"Complete the Denver drill." },
+  { n:28, topics:["Size-Up & Fire Behavior"], text:"Discuss smoke behavior and how to read smoke." },
+  { n:29, topics:["RIT & Self-Rescue"], text:"Discuss your department's mayday protocols." },
+  { n:30, topics:["Ladders"], text:"Practice a beam raise and a flat raise. Discuss what their purpose is for." },
+  { n:31, topics:["Technical Rescue"], text:"Review the anatomy of cars: A, B, C post. Possible hazards for different vehicles? Go over the tools on your rig and their capabilities." },
+  { n:32, topics:["Technical Rescue"], text:"Set up a hauling system." },
+  { n:33, topics:["Buildings & Entry"], text:"Discuss gap, set, force. Force an inward swinging door." },
+  { n:34, topics:["Technical Rescue"], text:"Go over the cribbing on your rig. Discuss the box cribbing capabilities of 4x4 & 6x6." },
+  { n:35, topics:["Technical Rescue"], text:"Set up a lowering system." },
+  { n:36, topics:["Ladders"], text:"Discuss the steps to setting up your aerial. Set the aerial up." },
+  { n:37, topics:["Hose & Fireground Ops"], text:"Complete a changeover while flowing a handline." },
+  { n:38, topics:["Hose & Fireground Ops"], text:"Discuss and determine what your weak spot is as a crew. Practice on it." },
+  { n:39, topics:["RIT & Self-Rescue"], text:"Discuss how you handle wire entanglement. Discuss the swimming method. Make sure everyone on your rig has a pair of wire cutters." },
+  { n:40, topics:["Ladders","Search & Rescue"], text:"Discuss how to bring a conscious victim down a ladder. Practice it." },
+  { n:41, topics:["RIT & Self-Rescue"], text:"Advance through a confined space. Practice taking your SCBA off and guiding it in front of you without losing contact." },
+  { n:42, topics:["Technical Rescue"], text:"Inventory how much rope you have on your rig. Go over basic knots with your crew and their purpose. Discuss life safety vs utility rope." },
+  { n:43, topics:["Technical Rescue"], text:"Go over how to package a patient in a Stokes basket/backboard." }
+];
+ 
+/* ---------- Build the topic buttons from the cards ---------- */
+const allTopics = ["All"];
+cards.forEach(c => c.topics.forEach(t => { if (!allTopics.includes(t)) allTopics.push(t); }));
+ 
+let currentTopic = "All";   // which topic button is selected
+let lastCardNumber = null;  // so we don't show the same card twice in a row
+ 
+const topicsDiv = document.getElementById("topics");
+allTopics.forEach(t => {
+  const b = document.createElement("button");
+  b.className = "chip" + (t === "All" ? " on" : "");
+  b.textContent = t;
+  b.onclick = () => {
+    currentTopic = t;
+    document.querySelectorAll(".chip").forEach(x => x.classList.remove("on"));
+    b.classList.add("on");
+    updateCount();
+  };
+  topicsDiv.appendChild(b);
+});
+ 
+/* ---------- Helpers ---------- */
+function cardsForTopic() {
+  return currentTopic === "All" ? cards : cards.filter(c => c.topics.includes(currentTopic));
+}
+function updateCount() {
+  document.getElementById("count").textContent = cardsForTopic().length + " cards in this group";
+}
+ 
+/* ---------- Draw a random card ---------- */
+function drawCard() {
+  const pool = cardsForTopic();
+  let pick;
+  do {
+    pick = pool[Math.floor(Math.random() * pool.length)];
+  } while (pool.length > 1 && pick.n === lastCardNumber);
+  lastCardNumber = pick.n;
+ 
+  const el = document.getElementById("card");
+  el.className = "";
+  el.innerHTML = "";
+  const meta = document.createElement("div");
+  meta.className = "meta";
+  meta.textContent = "Card " + pick.n + " · " + pick.topics.join(" · ");
+  if (pick.timed) {
+    const badge = document.createElement("span");
+    badge.className = "badge";
+    badge.textContent = "TIMED";
+    meta.appendChild(badge);
+  }
+  const text = document.createElement("div");
+  text.className = "text";
+  text.textContent = pick.text;
+  el.appendChild(meta);
+  el.appendChild(text);
+}
+ 
+document.getElementById("draw").onclick = drawCard;
+updateCount();
+</script>
+</body>
+</html>
+ 
