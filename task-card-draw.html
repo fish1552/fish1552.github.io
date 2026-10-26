@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<!-- Firefighter Task Cards | Version 1.1.0 | 2026-10-26 | 43 cards, easy CARD_LIST format -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Firefighter Task Cards</title>
@@ -13,13 +14,13 @@
          display:flex; flex-direction:column; align-items:center; }
   h1 { font-size:1.4rem; margin:8px 0 4px; letter-spacing:.05em; text-transform:uppercase; }
   .sub { color:#aaa; margin:0 0 14px; font-size:.95rem; }
- 
+
   /* Topic buttons */
   #topics { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; max-width:640px; margin-bottom:16px; }
   .chip { background:var(--chip); color:#eee; border:1px solid #444; border-radius:999px;
           padding:8px 14px; font-size:.95rem; cursor:pointer; font-family:inherit; }
   .chip.on { background:var(--chip-on); border-color:var(--chip-on); color:#fff; }
- 
+
   /* The card */
   #card { background:var(--card); color:var(--ink); width:100%; max-width:640px; min-height:260px;
           border-radius:16px; padding:24px; display:flex; flex-direction:column; justify-content:center;
@@ -28,7 +29,7 @@
   #card .text { font-size:1.35rem; line-height:1.4; font-weight:700; }
   #card.empty .text { color:#777; font-weight:400; text-align:center; }
   .badge { display:inline-block; background:var(--red); color:#fff; border-radius:6px; padding:2px 8px; margin-left:6px; font-size:.75rem; }
- 
+
   #draw { margin-top:18px; background:var(--red); color:#fff; border:0; border-radius:12px;
           font-size:1.3rem; padding:16px 40px; cursor:pointer; font-family:inherit; font-weight:700; }
   #draw:active { transform:scale(.98); }
@@ -36,76 +37,116 @@
 </style>
 </head>
 <body>
- 
+
 <h1>Firefighter Task Cards</h1>
 <p class="sub">Pick a topic, then draw a card.</p>
- 
+
 <div id="topics"></div>
- 
+
 <div id="card" class="empty">
   <div class="text">Tap "Draw a Card" to start.</div>
 </div>
- 
+
 <button id="draw">Draw a Card</button>
 <div id="count"></div>
- 
+
 <script>
-/* ---------- The cards ----------
-   To add a card: copy one line, change the number, topics, and text.
-   "topics" can hold more than one topic. "timed" is true for drills you time. */
-const cards = [
-  { n:1,  topics:["Search & Rescue"], text:"Discuss how you would complete a primary search with the number of personnel you usually have on your rig. What tools will you need? Who will have a TIC? Searching off the handline." },
-  { n:2,  topics:["Equipment & Hazmat"], text:"Discuss how to use the Emergency Response Guidebook." },
-  { n:3,  topics:["Equipment & Hazmat"], text:"Go over what kind of chainsaw you have on your rig. Discuss the fuel it takes, how to take it apart, and how to sharpen it. Take it apart and put it back together." },
-  { n:4,  topics:["Search & Rescue"], text:"Go over different drags to remove victims/firefighters. Include flat ground and stairs." },
-  { n:5,  topics:["Search & Rescue"], timed:true, text:"Discuss your plan for a confirmed entrapment on a residential fire. 1st floor vs. 2nd floor? Each person should know their role. Record your time for a simulated entrapment: from the time the brakes are pulled to the time you make contact with the victim." },
-  { n:6,  topics:["Buildings & Entry"], text:"Identify a hazardous building/area in your first-in district that will have challenges. Discuss these challenges and what your plan is to overcome them." },
-  { n:7,  topics:["RIT & Self-Rescue"], text:"Practice bailouts." },
-  { n:8,  topics:["Water Supply & Pumping"], text:"Go over the different color fire hydrants and their GPM." },
-  { n:9,  topics:["RIT & Self-Rescue"], text:"Discuss \"smooth, bump, bump, to the pump\" and its purpose when you become disoriented. (Smooth side = male coupling; two lugs = female side. Smooth, bump, bump means you are headed toward the pump.) Practice finding your way back to the truck." },
-  { n:10, topics:["Water Supply & Pumping"], text:"Discuss what kind of load your cross lay is. Discuss how many feet of hose you have. Discuss your nozzle type. Determine what pressure you would pump the line at." },
-  { n:11, topics:["RIT & Self-Rescue"], text:"Look over your department's RIT procedures. Go over your RIT pack and practice making the connections from the pack to your SCBA." },
-  { n:12, topics:["Search & Rescue","Ladders"], text:"Discuss how to bring an unconscious victim down a ladder. Practice it." },
-  { n:13, topics:["Equipment & Hazmat"], text:"Discuss what kind of gas monitor you have on your rig. Discuss its capabilities and what the lower explosive limit is." },
-  { n:14, topics:["RIT & Self-Rescue"], text:"Go over the use for a hasty harness. Review how to make a hasty harness." },
-  { n:15, topics:["Search & Rescue"], text:"Discuss the steps to a VEIS: Vent, Enter, Isolate, Search. What tools would you need to complete this?" },
-  { n:16, topics:["Buildings & Entry"], text:"Review the types of building construction. Identify what you have in your first due." },
-  { n:17, topics:["Buildings & Entry"], text:"Discuss gap, set, force. Force an outward-swinging door." },
-  { n:18, topics:["Water Supply & Pumping"], timed:true, text:"Practice masking up with your crew and record your times. Then deploy a cross lay to a doorway and mask up. Record this time as well. Do this each week and see if you can beat the previous week's time." },
-  { n:19, topics:["Water Supply & Pumping"], text:"Determine how much water your rig has. Discuss how long you could flow using your master stream or multiple handlines." },
-  { n:20, topics:["Water Supply & Pumping"], text:"Go over the tools in your hydrant bag. Practice dressing and wrapping the hydrant." },
-  { n:21, topics:["Size-Up & Fire Behavior"], text:"Discuss what elements are important to identify during your 360." },
-  { n:22, topics:["Ladders"], text:"Throw a 24ft extension ladder." },
-  { n:23, topics:["Hose & Fireground Ops"], text:"Practice hose line advancement. Discuss how to advance a line up a stairwell and working pinch points." },
-  { n:24, topics:["Technical Rescue"], text:"Practice a pretension back tie." },
-  { n:25, topics:["Size-Up & Fire Behavior"], text:"Review your department's size up procedures. Practice doing size ups on med calls in your first in." },
-  { n:26, topics:["RIT & Self-Rescue"], text:"Discuss what a buddy breather is, where it's located, and how to use it." },
-  { n:27, topics:["RIT & Self-Rescue"], text:"Complete the Denver drill." },
-  { n:28, topics:["Size-Up & Fire Behavior"], text:"Discuss smoke behavior and how to read smoke." },
-  { n:29, topics:["RIT & Self-Rescue"], text:"Discuss your department's mayday protocols." },
-  { n:30, topics:["Ladders"], text:"Practice a beam raise and a flat raise. Discuss what their purpose is for." },
-  { n:31, topics:["Technical Rescue"], text:"Review the anatomy of cars: A, B, C post. Possible hazards for different vehicles? Go over the tools on your rig and their capabilities." },
-  { n:32, topics:["Technical Rescue"], text:"Set up a hauling system." },
-  { n:33, topics:["Buildings & Entry"], text:"Discuss gap, set, force. Force an inward swinging door." },
-  { n:34, topics:["Technical Rescue"], text:"Go over the cribbing on your rig. Discuss the box cribbing capabilities of 4x4 & 6x6." },
-  { n:35, topics:["Technical Rescue"], text:"Set up a lowering system." },
-  { n:36, topics:["Ladders"], text:"Discuss the steps to setting up your aerial. Set the aerial up." },
-  { n:37, topics:["Hose & Fireground Ops"], text:"Complete a changeover while flowing a handline." },
-  { n:38, topics:["Hose & Fireground Ops"], text:"Discuss and determine what your weak spot is as a crew. Practice on it." },
-  { n:39, topics:["RIT & Self-Rescue"], text:"Discuss how you handle wire entanglement. Discuss the swimming method. Make sure everyone on your rig has a pair of wire cutters." },
-  { n:40, topics:["Ladders","Search & Rescue"], text:"Discuss how to bring a conscious victim down a ladder. Practice it." },
-  { n:41, topics:["RIT & Self-Rescue"], text:"Advance through a confined space. Practice taking your SCBA off and guiding it in front of you without losing contact." },
-  { n:42, topics:["Technical Rescue"], text:"Inventory how much rope you have on your rig. Go over basic knots with your crew and their purpose. Discuss life safety vs utility rope." },
-  { n:43, topics:["Technical Rescue"], text:"Go over how to package a patient in a Stokes basket/backboard." }
+/* =====================================================================
+   THE CARD LIST  -  this is the only part you need to edit to add cards
+   ---------------------------------------------------------------------
+   HOW TO ADD A CARD:
+     1. Copy any one line below (from the [ to the ], at the end).
+     2. Paste it on a new line at the BOTTOM of the list.
+     3. Change the topic(s) and the text between the backtick marks.
+        Backticks look like this:  `   (the key left of the 1 key)
+
+   Each line has this shape:
+     [`Topic`, `The text of the card`],
+
+   - Several topics?  Separate with commas inside the first pair:
+       [`Ladders, Search & Rescue`, `Card text here`],
+   - Timed drill?  Add a third piece:
+       [`Search & Rescue`, `Card text here`, `timed`],
+   - Quotes and apostrophes in the text are fine. Just don't use a backtick.
+   - Every line ends with a comma.
+   - Card numbers are automatic (1st line = Card 1, and so on). Add new cards
+     at the BOTTOM so existing card numbers stay the same.
+   - A new topic name makes a new filter button automatically. Spell it the
+     same way each time (Ladders is not the same as Ladder).
+   ===================================================================== */
+// Version 1.1.0 (2026-10-26) - code only, not shown on the page.
+// To bump: change this line, the HTML comment at the top, and the date.
+const APP_VERSION = "1.1.0";
+
+const CARD_LIST = [
+  [`Search & Rescue`, `Discuss how you would complete a primary search with the number of personnel you usually have on your rig. What tools will you need? Who will have a TIC? Searching off the handline.`],
+  [`Equipment & Hazmat`, `Discuss how to use the Emergency Response Guidebook.`],
+  [`Equipment & Hazmat`, `Go over what kind of chainsaw you have on your rig. Discuss the fuel it takes, how to take it apart, and how to sharpen it. Take it apart and put it back together.`],
+  [`Search & Rescue`, `Go over different drags to remove victims/firefighters. Include flat ground and stairs.`],
+  [`Search & Rescue`, `Discuss your plan for a confirmed entrapment on a residential fire. 1st floor vs. 2nd floor? Each person should know their role. Record your time for a simulated entrapment: from the time the brakes are pulled to the time you make contact with the victim.`, `timed`],
+  [`Buildings & Entry`, `Identify a hazardous building/area in your first-in district that will have challenges. Discuss these challenges and what your plan is to overcome them.`],
+  [`RIT & Self-Rescue`, `Practice bailouts.`],
+  [`Water Supply & Pumping`, `Go over the different color fire hydrants and their GPM.`],
+  [`RIT & Self-Rescue`, `Discuss "smooth, bump, bump, to the pump" and its purpose when you become disoriented. (Smooth side = male coupling; two lugs = female side. Smooth, bump, bump means you are headed toward the pump.) Practice finding your way back to the truck.`],
+  [`Water Supply & Pumping`, `Discuss what kind of load your cross lay is. Discuss how many feet of hose you have. Discuss your nozzle type. Determine what pressure you would pump the line at.`],
+  [`RIT & Self-Rescue`, `Look over your department's RIT procedures. Go over your RIT pack and practice making the connections from the pack to your SCBA.`],
+  [`Search & Rescue, Ladders`, `Discuss how to bring an unconscious victim down a ladder. Practice it.`],
+  [`Equipment & Hazmat`, `Discuss what kind of gas monitor you have on your rig. Discuss its capabilities and what the lower explosive limit is.`],
+  [`RIT & Self-Rescue`, `Go over the use for a hasty harness. Review how to make a hasty harness.`],
+  [`Search & Rescue`, `Discuss the steps to a VEIS: Vent, Enter, Isolate, Search. What tools would you need to complete this?`],
+  [`Buildings & Entry`, `Review the types of building construction. Identify what you have in your first due.`],
+  [`Buildings & Entry`, `Discuss gap, set, force. Force an outward-swinging door.`],
+  [`Water Supply & Pumping`, `Practice masking up with your crew and record your times. Then deploy a cross lay to a doorway and mask up. Record this time as well. Do this each week and see if you can beat the previous week's time.`, `timed`],
+  [`Water Supply & Pumping`, `Determine how much water your rig has. Discuss how long you could flow using your master stream or multiple handlines.`],
+  [`Water Supply & Pumping`, `Go over the tools in your hydrant bag. Practice dressing and wrapping the hydrant.`],
+  [`Size-Up & Fire Behavior`, `Discuss what elements are important to identify during your 360.`],
+  [`Ladders`, `Throw a 24ft extension ladder.`],
+  [`Hose & Fireground Ops`, `Practice hose line advancement. Discuss how to advance a line up a stairwell and working pinch points.`],
+  [`Technical Rescue`, `Practice a pretension back tie.`],
+  [`Size-Up & Fire Behavior`, `Review your department's size up procedures. Practice doing size ups on med calls in your first in.`],
+  [`RIT & Self-Rescue`, `Discuss what a buddy breather is, where it's located, and how to use it.`],
+  [`RIT & Self-Rescue`, `Complete the Denver drill.`],
+  [`Size-Up & Fire Behavior`, `Discuss smoke behavior and how to read smoke.`],
+  [`RIT & Self-Rescue`, `Discuss your department's mayday protocols.`],
+  [`Ladders`, `Practice a beam raise and a flat raise. Discuss what their purpose is for.`],
+  [`Technical Rescue`, `Review the anatomy of cars: A, B, C post. Possible hazards for different vehicles? Go over the tools on your rig and their capabilities.`],
+  [`Technical Rescue`, `Set up a hauling system.`],
+  [`Buildings & Entry`, `Discuss gap, set, force. Force an inward swinging door.`],
+  [`Technical Rescue`, `Go over the cribbing on your rig. Discuss the box cribbing capabilities of 4x4 & 6x6.`],
+  [`Technical Rescue`, `Set up a lowering system.`],
+  [`Ladders`, `Discuss the steps to setting up your aerial. Set the aerial up.`],
+  [`Hose & Fireground Ops`, `Complete a changeover while flowing a handline.`],
+  [`Hose & Fireground Ops`, `Discuss and determine what your weak spot is as a crew. Practice on it.`],
+  [`RIT & Self-Rescue`, `Discuss how you handle wire entanglement. Discuss the swimming method. Make sure everyone on your rig has a pair of wire cutters.`],
+  [`Ladders, Search & Rescue`, `Discuss how to bring a conscious victim down a ladder. Practice it.`],
+  [`RIT & Self-Rescue`, `Advance through a confined space. Practice taking your SCBA off and guiding it in front of you without losing contact.`],
+  [`Technical Rescue`, `Inventory how much rope you have on your rig. Go over basic knots with your crew and their purpose. Discuss life safety vs utility rope.`],
+  [`Technical Rescue`, `Go over how to package a patient in a Stokes basket/backboard.`],
+  [`Equipment & Hazmat`, `Discuss & practice how to properly set up a vent fan at a doorway.`],
+  [`Size-Up & Fire Behavior`, `Discuss the fire tetrahedron and it's 4 methods of extinguishing a fire.`],
+  [`Size-Up & Fire Behavior`, `List as many of the backdraft incicators as you can.`],
+  // ADD NEW CARDS ABOVE THIS LINE
 ];
- 
+
+/* ---------- Turns the list above into cards (you don't need to edit this) ---------- */
+const cards = CARD_LIST
+  .filter(row => row && row[1] && row[1].trim())      // skips blank lines
+  .map((row, i) => ({
+    n: i + 1,
+    topics: (row[0] || "").split(",").map(t => t.trim()).filter(Boolean).length
+      ? row[0].split(",").map(t => t.trim()).filter(Boolean)
+      : ["Other"],
+    timed: (row[2] || "").trim().toLowerCase() === "timed",
+    text: row[1].trim()
+  }));
+
 /* ---------- Build the topic buttons from the cards ---------- */
 const allTopics = ["All"];
 cards.forEach(c => c.topics.forEach(t => { if (!allTopics.includes(t)) allTopics.push(t); }));
- 
+
 let currentTopic = "All";   // which topic button is selected
 let lastCardNumber = null;  // so we don't show the same card twice in a row
- 
+
 const topicsDiv = document.getElementById("topics");
 allTopics.forEach(t => {
   const b = document.createElement("button");
@@ -119,7 +160,7 @@ allTopics.forEach(t => {
   };
   topicsDiv.appendChild(b);
 });
- 
+
 /* ---------- Helpers ---------- */
 function cardsForTopic() {
   return currentTopic === "All" ? cards : cards.filter(c => c.topics.includes(currentTopic));
@@ -127,7 +168,7 @@ function cardsForTopic() {
 function updateCount() {
   document.getElementById("count").textContent = cardsForTopic().length + " cards in this group";
 }
- 
+
 /* ---------- Draw a random card ---------- */
 function drawCard() {
   const pool = cardsForTopic();
@@ -136,7 +177,7 @@ function drawCard() {
     pick = pool[Math.floor(Math.random() * pool.length)];
   } while (pool.length > 1 && pick.n === lastCardNumber);
   lastCardNumber = pick.n;
- 
+
   const el = document.getElementById("card");
   el.className = "";
   el.innerHTML = "";
@@ -155,10 +196,9 @@ function drawCard() {
   el.appendChild(meta);
   el.appendChild(text);
 }
- 
+
 document.getElementById("draw").onclick = drawCard;
 updateCount();
 </script>
 </body>
 </html>
- 
