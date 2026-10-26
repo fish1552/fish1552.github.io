@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+ 
     :root {
       --bg: #F7F6F2;
       --surface: #FFFFFF;
@@ -18,16 +18,16 @@
       --border: #DDDDD8;
       --accent: #C94B2C;
       --tag-bg: #EEEEE9;
-
+ 
       /* Status colors (used by the little tags on each project) */
       --status-complete: #3B7A57;   /* muted green  */
       --status-progress: #C94B2C;   /* accent rust  */
       --status-planned:  #6B6B67;   /* muted gray   */
-
+ 
       --font-mono: 'IBM Plex Mono', monospace;
       --font-sans: 'IBM Plex Sans', sans-serif;
     }
-
+ 
     body {
       background: var(--bg);
       color: var(--text);
@@ -36,13 +36,13 @@
       line-height: 1.7;
       min-height: 100vh;
     }
-
+ 
     .page {
       max-width: 680px;
       margin: 0 auto;
       padding: 4rem 1.5rem 6rem;
     }
-
+ 
     /* Back link */
     .back-link {
       display: inline-block;
@@ -53,16 +53,16 @@
       margin-bottom: 2rem;
       transition: opacity 0.15s;
     }
-
+ 
     .back-link:hover { opacity: 0.7; }
-
+ 
     /* Header */
     .header {
       border-bottom: 1px solid var(--border);
       padding-bottom: 2.5rem;
       margin-bottom: 2.5rem;
     }
-
+ 
     .handle {
       font-family: var(--font-mono);
       font-size: 13px;
@@ -71,7 +71,7 @@
       letter-spacing: 0.04em;
       margin-bottom: 0.5rem;
     }
-
+ 
     .name {
       font-family: var(--font-mono);
       font-size: 2.4rem;
@@ -80,19 +80,19 @@
       line-height: 1.1;
       margin-bottom: 1rem;
     }
-
+ 
     .bio {
       font-size: 16px;
       color: var(--muted);
       max-width: 520px;
       line-height: 1.7;
     }
-
+ 
     /* Sections */
     .section {
       margin-bottom: 2.5rem;
     }
-
+ 
     .section-label {
       font-family: var(--font-mono);
       font-size: 11px;
@@ -102,14 +102,14 @@
       text-transform: uppercase;
       margin-bottom: 1rem;
     }
-
+ 
     /* Project list */
     .project-list {
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
     }
-
+ 
     /* Each project is a card. If it has a link it's an <a>, otherwise a <div>. */
     .project-card {
       display: block;
@@ -121,10 +121,10 @@
       color: inherit;
       transition: border-color 0.15s;
     }
-
+ 
     /* Only the clickable cards get the hover highlight */
     a.project-card:hover { border-color: var(--accent); }
-
+ 
     .project-top {
       display: flex;
       align-items: center;
@@ -132,26 +132,26 @@
       gap: 1rem;
       margin-bottom: 4px;
     }
-
+ 
     .project-title {
       font-family: var(--font-mono);
       font-size: 15px;
       font-weight: 600;
       color: var(--text);
     }
-
+ 
     .project-desc {
       font-size: 14px;
       color: var(--muted);
     }
-
+ 
     .project-meta {
       font-family: var(--font-mono);
       font-size: 12px;
       color: var(--muted);
       margin-top: 8px;
     }
-
+ 
     /* Status tag */
     .status {
       font-family: var(--font-mono);
@@ -165,11 +165,11 @@
       white-space: nowrap;
       flex-shrink: 0;
     }
-
+ 
     .status-complete { color: var(--status-complete); }
     .status-progress { color: var(--status-progress); }
     .status-planned  { color: var(--status-planned);  }
-
+ 
     /* Footer */
     .footer {
       margin-top: 4rem;
@@ -179,7 +179,7 @@
       font-size: 12px;
       color: var(--muted);
     }
-
+ 
     @media (max-width: 480px) {
       .name { font-size: 1.8rem; }
       .page { padding: 2.5rem 1.25rem 4rem; }
@@ -189,10 +189,10 @@
 </head>
 <body>
   <main class="page">
-
+ 
     <!-- Back to the home page -->
     <a class="back-link" href="/index.html">&larr; Back home</a>
-
+ 
     <header class="header">
       <p class="handle">// github.com/Fish1552</p>
       <h1 class="name">Projects</h1>
@@ -200,24 +200,33 @@
         Things I'm building and tinkering with. Some are finished, some are still in the workshop.
       </p>
     </header>
-
+ 
     <section class="section" aria-label="Projects">
       <p class="section-label">Project list</p>
       <div class="project-list">
-
+ 
         <!-- ============================================================
              HOW TO ADD A NEW PROJECT:
              Copy one of the cards below and change the text.
-
+ 
              - If it HAS a link:  use  <a class="project-card" href="URL" ...>
              - If it does NOT:    use  <div class="project-card"> ... </div>
-
+ 
              For the status tag, use ONE of these classes:
                status-complete   (green)
                status-progress   (rust/orange)
                status-planned     (gray)
              ============================================================ -->
-
+ 
+        <!-- Skills card draw (has a link) -->
+        <a class="project-card" href="https://fish1552.github.io/task-card-draw.html" target="_blank" rel="noopener">
+          <div class="project-top">
+            <span class="project-title">Firefighter Skills Card Draw</span>
+            <span class="status status-complete">Complete</span>
+          </div>
+          <p class="project-desc">Pick a topic and draw a random drill or discussion card for your crew's daily training.</p>
+        </a>
+ 
         <!-- Project 1 — Pay scale (has a link) -->
         <a class="project-card" href="https://fish1552.github.io/firefighter_pay.html" target="_blank" rel="noopener">
           <div class="project-top">
@@ -226,7 +235,7 @@
           </div>
           <p class="project-desc">A smaller, easier-to-use app for mobile devices.</p>
         </a>
-
+ 
         <!-- Project 2 — Retirement estimator (has a link) -->
         <a class="project-card" href="https://fish1552.github.io/firefighter-retirement-estimator.html" target="_blank" rel="noopener">
           <div class="project-top">
@@ -235,7 +244,7 @@
           </div>
           <p class="project-desc">A page to estimate your net monthly FERS retirement check &mdash; pension, supplement, and TSP.</p>
         </a>
-
+ 
         <!-- Project 3 — has a link -->
         <a class="project-card" href="https://fish1552.github.io/motorola-date-decoder.html" target="_blank" rel="noopener">
           <div class="project-top">
@@ -244,7 +253,7 @@
           </div>
           <p class="project-desc">A page to decipher the date codes on Motorola radios and associated products easily.</p>
         </a>
-
+ 
         <!-- Project 4 — has a link -->
         <a class="project-card" href="https://fish1552.github.io/Shield%20Builder.html" target="_blank" rel="noopener">
           <div class="project-top">
@@ -253,7 +262,7 @@
           </div>
           <p class="project-desc">A page to quickly build and save helmet shields for personnel profiles.</p>
         </a>
-
+ 
         <!-- Project 5 — no link yet, so it's a <div> (not clickable). -->
         <div class="project-card">
           <div class="project-top">
@@ -263,14 +272,14 @@
           <p class="project-desc">A page to quickly build customized fire report narratives that can be copied and pasted into your software.</p>
           <p class="project-meta">Link coming soon</p>
         </div>
-
+ 
       </div>
     </section>
-
+ 
     <footer class="footer">
       <p>Fish1552 &mdash; Ludowici, GA &mdash; built with plain HTML</p>
     </footer>
-
+ 
   </main>
 </body>
 </html>
