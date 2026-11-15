@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sticky Limb Stables - Hay Used</title>
+<style>
+  :root{--green:#2f5d34;--tan:#f4f1e8;--line:#b9b9a5}
+  *{box-sizing:border-box}
+  body{font-family:system-ui,-apple-system,sans-serif;margin:0;padding:16px;background:var(--tan);color:#2b2b2b}
+  .card{max-width:440px;margin:0 auto;background:#fff;border-radius:16px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+  h1{font-size:1.25rem;margin:0 0 4px;color:var(--green)}
+  .sub{margin:0 0 14px;color:#555;font-size:.95rem}
+  .tally{display:flex;gap:10px;margin-bottom:6px}
+  .tally div{flex:1;text-align:center;background:#eef3ea;border-radius:12px;padding:10px}
+  .tally b{display:block;font-size:1.8rem;color:var(--green)}
+  .tally span{font-size:.85rem;color:#555}
+  label{display:block;margin-top:16px;font-weight:700}
+  select,input[type=text],input[type=password]{width:100%;font-size:1.1rem;padding:12px;margin-top:6px;border:2px solid var(--line);border-radius:10px;background:#fff}
+  .seg{display:flex;gap:10px;margin-top:6px}
+  .seg button{flex:1;font-size:1.2rem;padding:14px;border:2px solid var(--line);border-radius:10px;background:#fff;font-weight:700}
+  .seg button.on{background:var(--green);border-color:var(--green);color:#fff}
+  .stepper{display:flex;align-items:center;gap:10px;margin-top:6px}
+  .stepper button{width:64px;height:56px;font-size:1.8rem;border:2px solid var(--line);border-radius:10px;background:#fff}
+  .stepper output{flex:1;text-align:center;font-size:2rem;font-weight:800}
+  #go{width:100%;margin-top:22px;font-size:1.25rem;padding:16px;border:0;border-radius:12px;background:var(--green);color:#fff;font-weight:800}
+  #go:disabled{opacity:.5}
+  .msg{margin-top:14px;padding:12px;border-radius:10px;font-size:1rem}
+  .ok{background:#dff0d8}.err{background:#f8d7da}
+  details{margin-top:18px;color:#555;font-size:.9rem}
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>Hay used - pastures</h1>
+  <p class="sub">Tap each time you take bales out of storage.</p>
+
+  <div class="tally">
+    <div><b id="tSq">--</b><span>Square left</span></div>
+    <div><b id="tRd">--</b><span>Round left</span></div>
+  </div>
+
+  <label>Bale type</label>
+  <div class="seg" id="type">
+    <button type="button" data-v="Square">Square</button>
+    <button type="button" data-v="Round">Round</button>
+  </div>
+
+  <label>How many bales?</label>
+  <div class="stepper">
+    <button type="button" id="minus">-</button>
+    <output id="count">1</output>
+    <button type="button" id="plus">+</button>
+  </div>
+
+  <label for="pasture" id="pastureLabel">Where is it going?</label>
+  <select id="pasture"></select>
+
+  <label for="who">Your name</label>
+  <input id="who" type="text" placeholder="First name" autocomplete="given-name">
+
+  <details id="codeBox">
+    <summary>Farm code (asked once per phone)</summary>
+    <input id="code" type="password" placeholder="Farm code" autocomplete="off">
+  </details>
+
+  <button id="go" type="button">Save</button>
+  <div id="out"></div>
+</div>
+
+<script>
+// ===== EDIT THESE THREE THINGS =====
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyoRtC1Ub3GOvn-TSFpYmlq4oX0VDcdRWO1TDwGlfOyIM71pmYstZjQyEz92smyHuSfOQ/exec";
+const PASTURES = {
+  Square: ["Horse show use", "Medical pens", "Diesel", "Quarantine pen"],
+  Round:  ["Pasture 1", "Pony Pasture", "Pasture 3 (small arena)", "Pasture 4 (near tractor)",
+           "Pasture 5 (metal barn)", "Pasture 6 (behind trailers)"
+           // add "Pasture 7" here when it is finished
+          ]
+};
+// (The farm code is set inside the Apps Script, not here.)
+// ===================================
+
+const $ = id => document.getElementById(id);
+let type = null, count = 1;
+
+function save(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }
+function load(k){ try{ return localStorage.getItem(k) || ""; }catch(e){ return ""; } }
+function say(cls, text){ $("out").innerHTML = '<div class="msg ' + cls + '"></div>'; $("out").firstChild.textContent = text; }
+
+function fillPastures(){
+  const sel = $("pasture");
+  sel.innerHTML = "";
+  if (!type){
+    const o = document.createElement("option"); o.textContent = "Pick a bale type first"; o.value = ""; sel.appendChild(o);
+    return;
+  }
+  $("pastureLabel").textContent = type === "Round" ? "Which pasture?" : "What is it for?";
+  PASTURES[type].forEach(p => { const o = document.createElement("option"); o.textContent = p; sel.appendChild(o); });
+  const last = load("pasture_" + type);
+  if (PASTURES[type].indexOf(last) !== -1) sel.value = last;
+}
+$("who").value = load("who");
+$("code").value = load("code");
+if (!$("code").value) $("codeBox").open = true;
+
+document.querySelectorAll("#type button").forEach(b => b.addEventListener("click", () => {
+  type = b.dataset.v;
+  document.querySelectorAll("#type button").forEach(x => x.classList.toggle("on", x === b));
+  fillPastures();
+}));
+// QR shortcut: page.html#round or page.html#square pre-selects the bale type
+(function(){
+  const h = (location.hash || "").replace("#", "").toLowerCase();
+  const want = h === "round" ? "Round" : (h === "square" ? "Square" : null);
+  if (!want) return;
+  type = want;
+  document.querySelectorAll("#type button").forEach(x => x.classList.toggle("on", x.dataset.v === want));
+})();
+fillPastures();
+$("minus").addEventListener("click", () => { count = Math.max(1, count - 1); $("count").textContent = count; });
+$("plus").addEventListener("click", () => { count = Math.min(50, count + 1); $("count").textContent = count; });
+
+function showTally(t){
+  if (!t) return;
+  $("tSq").textContent = t.square;
+  $("tRd").textContent = t.round;
+}
+
+async function refresh(){
+  if (SCRIPT_URL.indexOf("PASTE_") === 0) { say("err", "This page is not connected yet. The owner needs to paste the Apps Script URL into the page."); return; }
+  try{
+    const r = await fetch(SCRIPT_URL);
+    const j = await r.json();
+    if (j.ok) showTally(j.tally);
+  }catch(e){ /* tally is optional */ }
+}
+
+$("go").addEventListener("click", async () => {
+  if (SCRIPT_URL.indexOf("PASTE_") === 0) { say("err", "This page is not connected yet."); return; }
+  if (!type){ say("err", "Pick Square or Round."); return; }
+  const who = $("who").value.trim();
+  const code = $("code").value.trim();
+  if (!$("pasture").value){ say("err", "Pick where it is going."); return; }
+  if (!who){ say("err", "Enter your name."); return; }
+  if (!code){ $("codeBox").open = true; say("err", "Enter the farm code."); return; }
+  save("who", who); save("code", code); save("pasture_" + type, $("pasture").value);
+  $("go").disabled = true;
+  say("ok", "Saving...");
+  try{
+    const r = await fetch(SCRIPT_URL, {
+      method: "POST",
+      headers: {"Content-Type": "text/plain;charset=utf-8"},
+      body: JSON.stringify({code: code, type: type, bales: count, pasture: $("pasture").value, name: who})
+    });
+    const j = await r.json();
+    if (j.ok){
+      say("ok", "Saved: " + count + " " + type.toLowerCase() + " to " + $("pasture").value + ".");
+      showTally(j.tally);
+      count = 1; $("count").textContent = 1;
+    } else {
+      say("err", "Not saved: " + (j.error || "unknown problem"));
+    }
+  }catch(e){
+    say("err", "Could not reach the sheet. Check your signal and try again. Nothing was saved.");
+  }
+  $("go").disabled = false;
+});
+
+refresh();
+</script>
+</body>
+</html>
