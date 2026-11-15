@@ -97,8 +97,11 @@ function fillPastures(){
   }
   $("pastureLabel").textContent = type === "Round" ? "Which pasture?" : "What is it for?";
   PASTURES[type].forEach(p => { const o = document.createElement("option"); o.textContent = p; sel.appendChild(o); });
-  const last = load("pasture_" + type);
-  if (PASTURES[type].indexOf(last) !== -1) sel.value = last;
+    if (type === "Square") { sel.value = "Medical pens"; }
+    else {
+      const last = load("pasture_" + type);
+      if (PASTURES[type].indexOf(last) !== -1) sel.value = last;
+    }
 }
 $("who").value = load("who");
 $("code").value = load("code");
